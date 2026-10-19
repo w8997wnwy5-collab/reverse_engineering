@@ -37,8 +37,8 @@ Use the executable and arguments from your working upstream registration. The le
 ```bash
 export REA_IDA_MCP_CONFIG=/absolute/path/to/ida-mcp.json
 export REA_ANALYSIS_PROVIDER=ida
-rea function /absolute/path/to/program main --json
-rea decompile /absolute/path/to/program main --json
+re-tool function /absolute/path/to/program main --json
+re-tool decompile /absolute/path/to/program main --json
 ```
 
 Open the **original input binary** in REA, not an `.idb` or `.i64` database. Its SHA-256 must match IDA's recorded input hash. REA checks the attached identity and image base around each analysis request. A mismatch or target switch fails with recovery guidance. The original input must remain readable by REA; WSL can use its mounted alias while the GUI runs on Windows. Attached profiles, including native mode, refuse universal Mach-O inputs at admission: every slice shares the recorded whole-file hash, so REA cannot verify which slice the GUI loaded. Open a thin file extracted with `lipo -thin` in both IDA and REA, or use headless mode, which analyzes the selected slice.
@@ -92,7 +92,7 @@ The same CLI commands work in both modes. For a Windows-native REA process:
 ```powershell
 $env:REA_IDA_MCP_CONFIG = 'D:\analysis\ida-mcp.json'
 $env:REA_ANALYSIS_PROVIDER = 'ida'
-rea function 'D:\samples\program.exe' main --json
+re-tool function 'D:\samples\program.exe' main --json
 ```
 
 Headless REA and the configured supervisor must share the host filesystem and native path syntax. Run REA on Windows when the supervisor runs on Windows. The attached profile can span WSL and a Windows GUI because it binds recorded input hashes instead of asking the GUI to open a WSL path.
@@ -112,9 +112,9 @@ Add the registration path to the **REA** MCP entry's environment, keeping the up
 ```json
 {
   "mcpServers": {
-    "rea": {
+    "re-tool": {
       "command": "npx",
-      "args": ["-y", "rea-agents@<version-with-ida>", "mcp"],
+      "args": ["-y", "re-tool@<version-with-ida>", "mcp"],
       "env": {
         "REA_ANALYSIS_PROVIDER": "ida",
         "REA_IDA_MCP_CONFIG": "/absolute/path/to/ida-mcp.json"
@@ -135,7 +135,7 @@ Use a package version that actually includes this adapter; repository main can b
 
 Opening an MCP target starts its selected provider session; headless opening waits for auto-analysis. Set the agent's MCP request deadline long enough for the target. The registration's optional `timeoutMs` defaults to 300000 for upstream requests. An upstream SDK request that reaches this limit returns `provider_timeout` with its operation and actual request budget. A freshly opened headless worker can briefly report `status: "busy"` from `server_health`; REA re-reads health every 100 ms until the worker answers, the caller cancels, or `timeoutMs` has elapsed since the first read. Each health request is capped by the time remaining in that overall wait, so a stalled read cannot extend the readiness deadline by another full request timeout. Expiry while the worker is still busy produces a retryable `provider_timeout`; no further read is started after the deadline. That error names the busy tool from the last observation, or `unknown` when the worker reported none or a value that is not tool-name-shaped. If a health request itself consumes the remaining wait budget, the same last-busy timeout is returned with the stalled request's captured output. Cancellation during the wait produces `cancelled`. Any other unexpected health payload, including a busy payload with an invalid shape, remains `unreadable_output`. Cancellation drains the current upstream request before cleanup; it does not force-stop GUI analysis. An open request that times out without a completed response retains the private workspace because worker inventory alone cannot prove the request has stopped. `binary_session` reports actual tool availability. Repeated doctor/setup calls are unnecessary when the registration already works.
 
-For guided registration, set `REA_IDA_MCP_CONFIG` before `rea setup --client <client>`. Setup includes that file reference in its reviewed plan and preserves it after approval; it does not copy upstream credentials into the agent configuration. For `ida` or `auto` selection, Codex/Kimi setup and doctor use the effective client registration's parsed `timeoutMs` (default 300000 ms) when recommending the agent's per-tool deadline. Existing positive client deadlines remain caller choices. `rea doctor --provider ida --json` validates the registration without starting IDA and explicitly leaves runtime compatibility and target binding for analysis.
+For guided registration, set `REA_IDA_MCP_CONFIG` before `re-tool setup --client <client>`. Setup includes that file reference in its reviewed plan and preserves it after approval; it does not copy upstream credentials into the agent configuration. For `ida` or `auto` selection, Codex/Kimi setup and doctor use the effective client registration's parsed `timeoutMs` (default 300000 ms) when recommending the agent's per-tool deadline. Existing positive client deadlines remain caller choices. `re-tool doctor --provider ida --json` validates the registration without starting IDA and explicitly leaves runtime compatibility and target binding for analysis.
 
 ## Coverage and evidence
 
@@ -159,4 +159,4 @@ The verifier requires the resolved procedure in both inventory and procedure sea
 
 The initial real workflows use stdio registrations for the legacy Windows GUI profile and a Windows x64 headless supervisor with IDA 9.3. The headless workflow has also passed on macOS arm64 with IDA Professional 9.1 (build 9.1.250226) against the same upstream commit `c133c3853faa111a9b00ee615c013b720d0c4acd`, using a source-built arm64 Mach-O fixture; Mach-O C symbols carry a leading underscore, so the procedure name is `_rea_fixture_add`. Streamable HTTP is tested against a loopback MCP fixture with the pinned client SDK; a real IDA HTTP-supervisor workflow remains unverified. Linux headless engine operation, other IDA releases, architectures, and modern attached GUI tools require their corresponding real workflows before support is claimed.
 
-Native Windows verification uses IDA Pro 9.3 with the public two-function fixture and Windows `whoami.exe`, using upstream `c9d15d98e8a143fc74f6e14037c48f63889b6d6c` with a loopback-listener change. It covers production CLI/MCP parity, distinct-function switching, identity and connection cleanup. See the [correctness and performance measurements](https://github.com/morluto/rea/blob/main/experiments/analysis-efficiency/ida-native-windows.md). This follow-up did not run Windows IDA Free or native macOS.
+Native Windows verification uses IDA Pro 9.3 with the public two-function fixture and Windows `whoami.exe`, using upstream `c9d15d98e8a143fc74f6e14037c48f63889b6d6c` with a loopback-listener change. It covers production CLI/MCP parity, distinct-function switching, identity and connection cleanup. See the [correctness and performance measurements](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/experiments/analysis-efficiency/ida-native-windows.md). This follow-up did not run Windows IDA Free or native macOS.

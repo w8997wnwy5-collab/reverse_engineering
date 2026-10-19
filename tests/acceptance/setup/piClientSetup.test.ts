@@ -25,9 +25,9 @@ for (const [setting, profile] of [
       const config = join(agent, "mcp.json");
       const original = JSON.stringify({
         mcpServers: {
-          rea: {
+          "re-tool": {
             type: "stdio",
-            command: "rea",
+            command: "re-tool",
             args: ["mcp"],
             env: { [setting]: profile },
           },
@@ -93,10 +93,10 @@ cliTest(
     };
     const original = JSON.stringify({
       mcpServers: {
-        rea: {
+        "re-tool": {
           type: "stdio",
           command: "npx",
-          args: ["-y", "rea-agents@1.0.0", "mcp"],
+          args: ["-y", "re-tool@1.0.0", "mcp"],
           env: custom,
         },
       },
@@ -149,14 +149,14 @@ cliTest(
     const registration = z
       .object({
         mcpServers: z.object({
-          rea: z.object({
+          "re-tool": z.object({
             command: z.string(),
             args: z.array(z.string()),
             env: z.record(z.string(), z.string()).optional(),
           }),
         }),
       })
-      .parse(JSON.parse(configured)).mcpServers.rea;
+      .parse(JSON.parse(configured)).mcpServers["re-tool"];
     const transport = new StdioClientTransport({
       command: registration.command,
       args: registration.args,
@@ -279,7 +279,7 @@ cliTest(
     expect(JSON.parse(configured)).toMatchObject({
       mcpServers: {
         other: { command: "other-server" },
-        rea: {
+        "re-tool": {
           type: "stdio",
           command: process.platform === "win32" ? process.execPath : cliPath,
           args: process.platform === "win32" ? [cliPath, "mcp"] : ["mcp"],
@@ -355,7 +355,7 @@ cliTest(
     const text = await readFile(config, "utf8");
     expect(() => JSON.parse(text)).not.toThrow();
     expect(JSON.parse(text)).toMatchObject({
-      mcpServers: { rea: { type: "stdio" } },
+      mcpServers: { "re-tool": { type: "stdio" } },
     });
     const doctor = await run(["doctor", "--client", "pi", "--json"]);
     expect(doctor.exitCode).toBe(0);
@@ -369,7 +369,7 @@ cliTest(
     });
     await run(["uninstall", "--json"]);
     expect(
-      JSON.parse(await readFile(config, "utf8")).mcpServers.rea,
+      JSON.parse(await readFile(config, "utf8")).mcpServers["re-tool"],
     ).toBeUndefined();
 
     const blocked = await createTestTempDirectory("rea-pi-cli-malformed-");

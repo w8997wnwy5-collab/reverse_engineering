@@ -11,13 +11,13 @@ observation complement that analysis when they answer a specific question.
 Choose an installed provider from [setup](installation.md#hopper). For Ghidra:
 
 ```bash
-rea inspect /absolute/path/to/program --provider ghidra --json
-rea search /absolute/path/to/program entry --kind procedures --provider ghidra --json
+re-tool inspect /absolute/path/to/program --provider ghidra --json
+re-tool search /absolute/path/to/program entry --kind procedures --provider ghidra --json
 ```
 
 Select an exact name or address from the returned inventory, then use it with
-`rea function PATH PROCEDURE --provider ghidra --json` for a function dossier,
-`rea instructions` for assembly, or `rea decompile` for pseudocode. Do not assume
+`re-tool function PATH PROCEDURE --provider ghidra --json` for a function dossier,
+`re-tool instructions` for assembly, or `re-tool decompile` for pseudocode. Do not assume
 that every target names its entry function `entry`. MCP uses `open_binary` and
 focused tools such as `list_procedures` and `analyze_function` on the same session.
 
@@ -36,9 +36,9 @@ focused tools such as `list_procedures` and `analyze_function` on the same sessi
 `xrefs` accepts `--address=<name-or-address>`. `search` accepts `--pattern=<text>`
 and `trace` accepts `--query=<text>`. These alternatives preserve names and text
 that begin with a dash, including Objective-C names such as
-`rea function ./app '--procedure=-[REAWidget delegate]' --provider hopper --format json`.
+`re-tool function ./app '--procedure=-[REAWidget delegate]' --provider hopper --format json`.
 Use the equals form when the value resembles a CLI flag, for example
-`rea trace ./app --query=--help --provider hopper --format json`.
+`re-tool trace ./app --query=--help --provider hopper --format json`.
 The existing positional forms remain available. Missing selectors and conflicting
 positional/named values fail before analysis starts; identical selections agree.
 
@@ -98,10 +98,10 @@ nonregular replacement reports `artifact_changed`. Source copying is cancellable
 and never replaces an existing private snapshot.
 
 ```bash
-rea inspect-native-instruction <binary> <address> --provider ghidra
-rea resolve-native-call-targets <binary> <call-site> --provider ghidra
-rea inspect-native-data-type <binary> --type /MyStruct --provider ghidra
-rea inspect-native-data-type <binary> --address <typed-data-address> --provider ghidra
+re-tool inspect-native-instruction <binary> <address> --provider ghidra
+re-tool resolve-native-call-targets <binary> <call-site> --provider ghidra
+re-tool inspect-native-data-type <binary> --type /MyStruct --provider ghidra
+re-tool inspect-native-data-type <binary> --address <typed-data-address> --provider ghidra
 ```
 
 Instruction facts include bytes, length, decoder text, ordered register/scalar/
@@ -145,7 +145,7 @@ inspection does not change function extents or prove a calling convention.
 The analysis profile commits this decoder behavior. Snapshots from the earlier
 profile produce a profile mismatch rather than replaying the former generic
 terminal result. The old snapshot's `evidence_bundle` remains valid retained
-Evidence: copy that object to a separate JSON file and use `rea evidence-import`
+Evidence: copy that object to a separate JSON file and use `re-tool evidence-import`
 to validate it. Run analysis without the old snapshot and save a fresh one
 under the current profile. Other providers and older captures may omit the
 classification evidence field.
@@ -207,7 +207,7 @@ leaving the Hopper API available. Literal mode retains Unicode casefold matching
 
 ## Bounded static traces
 
-`trace_native_ui_action` / `rea trace-native-ui-action <target> <seed>` accepts
+`trace_native_ui_action` / `re-tool trace-native-ui-action <target> <seed>` accepts
 one authored selector/object ID, native symbol or exact function address. It
 joins UI wiring to uniquely matched class/selector implementations and follows
 bounded typed call references. Direct references, resolved indirect references,
@@ -246,7 +246,7 @@ These routes add no request option or default mode, so discovery omits
 `default_mode_available`. Availability describes source prerequisites;
 the result reports the query's actual matches, coverage and failures.
 
-`trace_native_values` / `rea trace-native-values <binary> <procedure> --provider
+`trace_native_values` / `re-tool trace-native-values <binary> <procedure> --provider
  ghidra` composes high-p-code def-use graphs across statically resolved calls.
 Logical CALL arguments bind to recovered parameter ordinals; recovered RETURN
 values bind to CALL outputs. These edges are decompiler-derived. Constants,
@@ -346,18 +346,18 @@ stream failure, and output exhaustion retain the captured output, exit details,
 and cleanup outcome in the error result. Truncated output is never parsed as a
 complete observation.
 
-- `trace_dylib_resolution` / `rea trace-dylib-resolution <app-or-mach-o>`
+- `trace_dylib_resolution` / `re-tool trace-dylib-resolution <app-or-mach-o>`
   parses Mach-O load commands in TypeScript and follows dyld's path expansion
   for every executable in an app bundle, or for one Mach-O within its directory.
   It reports each `@rpath`, `@loader_path` and `@executable_path` candidate with
   its outcome. Paths outside the analyzed root, including shared-cache system
   libraries, stay undetermined. See
   [Apple application analysis](apple-application-analysis.md#dylib-load-resolution).
-- `inspect_asset_catalog` / `rea inspect-asset-catalog <app>` reads compiled
+- `inspect_asset_catalog` / `re-tool inspect-asset-catalog <app>` reads compiled
   `Assets.car` metadata through macOS `assetutil --info`. Catalog digests, raw
   rendition fields, pagination and exact UI resource-name matches are returned.
   Image extraction and undocumented rendition interpretation are unsupported.
-- `inspect_keyed_archive` / `rea inspect-keyed-archive <plist>` reads XML or
+- `inspect_keyed_archive` / `re-tool inspect-keyed-archive <plist>` reads XML or
   binary Foundation keyed archives without instantiating classes. For an active
   app, provide its relative archive path as the second CLI argument or MCP
   `path`. Results retain original `$objects` indices, named `$top` roots,
@@ -380,7 +380,7 @@ complete observation.
   comments do not change that handling. XML key names combine their text and
   CDATA segments without trimming or expanding literal CDATA entities. Other
   values and the original archive digest are preserved.
-- `decode_interface_builder` / `rea decode-interface-builder <app>` reads
+- `decode_interface_builder` / `re-tool decode-interface-builder <app>` reads
   compiled storyboard and nib resources into objects, outlets, actions,
   connections and controller/class names. A full app graph is often several
   megabytes (XLD.app: 6.7 MB, about 2M tokens, which also exceeds the default
@@ -417,7 +417,7 @@ complete observation.
   explicitly partial `archive_decode` facet; previously decoded documents and
   their identities remain available.
 - `inspect_native_dispatch_metadata` /
-  `rea inspect-native-dispatch-metadata <app-or-binary>` prefers a validated macOS Mach-O byte reader. It decodes
+  `re-tool inspect-native-dispatch-metadata <app-or-binary>` prefers a validated macOS Mach-O byte reader. It decodes
   64-bit little-endian Objective-C class/metaclass records, superclass pointers,
   absolute/relative method entries, ivar offsets/sizes/alignment and protocol
   declarations. It also decodes simple Swift conformances, static synchronous
@@ -497,7 +497,7 @@ actions may change application data or trigger network activity.
 
 ## Native call observation
 
-`observe_native_calls` / `rea observe-native-calls <app-or-mach-o> <input-json>`
+`observe_native_calls` / `re-tool observe-native-calls <app-or-mach-o> <input-json>`
 launches the active Mach-O as a new, owned process under LLDB. It stops at
 caller-selected entries, records them and continues:
 
@@ -506,7 +506,7 @@ caller-selected entries, records them and continues:
   instance or class methods.
 
 ```sh
-rea observe-native-calls /Applications/Example.app '{"breakpoints":[{"kind":"objc-method","class_name":"NSURLSession","selector":"dataTaskWithRequest:completionHandler:"},{"kind":"function","name":"open","module":"libsystem_kernel.dylib"}],"duration_ms":5000,"backtrace_frames":4}' --json
+re-tool observe-native-calls /Applications/Example.app '{"breakpoints":[{"kind":"objc-method","class_name":"NSURLSession","selector":"dataTaskWithRequest:completionHandler:"},{"kind":"function","name":"open","module":"libsystem_kernel.dylib"}],"duration_ms":5000,"backtrace_frames":4}' --json
 ```
 
 Each event is an observation: thread, image, symbol, load and file address,
@@ -722,7 +722,7 @@ Use `search_bytes` after opening a target with Ghidra to locate a known constant
 or instruction sequence. For example, `{"pattern":"48 8B ?? ?? 89","limit":100}`
 returns ordered addresses with segments, source file offsets and containing
 procedures. The CLI equivalent is
-`rea search-bytes ./program '48 8B ?? ?? 89' --provider ghidra`.
+`re-tool search-bytes ./program '48 8B ?? ?? 89' --provider ghidra`.
 Use `start`/`end` to constrain the inclusive address window, and continue with
 `next_cursor` until `complete` is true. Inspect `searched` for page coverage and
 skipped uninitialized blocks. A missing match does not establish absence from

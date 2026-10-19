@@ -183,7 +183,7 @@ cliTest.skipIf(process.platform === "win32" || process.getuid?.() === 0)(
     const target = join(locked, "client.json");
     await mkdir(locked);
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n';
     await writeFile(target, original);
     const config = join(home, ".claude.json");
     await symlink(target, config);

@@ -73,13 +73,7 @@ try {
     ["install", "--no-package-lock", "--no-save", "--prefix", prefix, tarball],
     { cwd: workspace, windowsHide: true },
   );
-  const entry = join(
-    prefix,
-    "node_modules",
-    "rea-agents",
-    "scripts",
-    "rea.mjs",
-  );
+  const entry = join(prefix, "node_modules", "re-tool", "scripts", "rea.mjs");
   const environment = {
     ...process.env,
     REA_ANALYSIS_PROVIDER: "auto",
@@ -223,8 +217,8 @@ try {
     prefix,
     packageRoot:
       process.platform === "win32"
-        ? join(prefix, "node_modules", "rea-agents")
-        : join(prefix, "lib", "node_modules", "rea-agents"),
+        ? join(prefix, "node_modules", "re-tool")
+        : join(prefix, "lib", "node_modules", "re-tool"),
     tarball,
     workspace,
     environment,

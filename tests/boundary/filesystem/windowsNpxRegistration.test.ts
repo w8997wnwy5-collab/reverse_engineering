@@ -17,7 +17,7 @@ import { createTestTempDirectory } from "../../fixtures/temporaryDirectory.js";
 
 const configurationSchema = z.object({
   mcpServers: z.object({
-    rea: z.object({ command: z.string(), args: z.array(z.string()) }),
+    "re-tool": z.object({ command: z.string(), args: z.array(z.string()) }),
   }),
 });
 
@@ -30,7 +30,7 @@ it.each([
       "mcp",
     ],
   },
-  { previousCommand: ["cmd", "/c", "npx", "-y", "rea-agents@5.0.0", "mcp"] },
+  { previousCommand: ["cmd", "/c", "npx", "-y", "re-tool@5.0.0", "mcp"] },
 ])(
   "migrates Windows npx registration $previousCommand idempotently and uninstalls only REA",
   async ({ previousCommand }) => {
@@ -40,7 +40,7 @@ it.each([
       theme: "dark",
       mcpServers: {
         other: { command: "another-server" },
-        rea: {
+        "re-tool": {
           command: previousCommand[0],
           args: previousCommand.slice(1),
         },
@@ -94,7 +94,7 @@ it.each(["npx", "bunx"] as const)(
     await mkdir(join(home, ".codex"));
     const configPath = join(home, ".codex", "config.toml");
     const original =
-      '\uFEFF# Keep this explanation.\nnotify = ["a", "b"]\nliteral = \'C:\\demo\\path\'\ndisabled_mcp_servers = ["rea"]\n\n[mcp_servers.other]\ncommand = "another-server"\n';
+      '\uFEFF# Keep this explanation.\nnotify = ["a", "b"]\nliteral = \'C:\\demo\\path\'\ndisabled_mcp_servers = ["re-tool"]\n\n[mcp_servers.other]\ncommand = "another-server"\n';
     await writeFile(configPath, original);
     const client = { name: "codex", configPath, format: "toml" } as const;
     const command = setupRegistrationCommand("win32", runner, undefined);
@@ -130,17 +130,19 @@ it("retains rea-named custom shell registrations without writing a backup", asyn
   } as const;
   for (const command of [
     ["cmd.exe", "/d", "/c", "node", "custom.js", "mcp"],
-    ["cmd.exe", "/k", "npx", "-y", "rea-agents@5.0.0", "mcp"],
-    ["cmd.exe", "/c", "npx -y rea-agents@5.0.0 mcp"],
+    ["cmd.exe", "/k", "npx", "-y", "re-tool@5.0.0", "mcp"],
+    ["cmd.exe", "/c", "npx -y re-tool@5.0.0 mcp"],
     ["cmd.exe", "/c", "npx", "-y", "another-package", "mcp"],
-    ["cmd.exe", "/c", "npx", "-y", "rea-agents@5.0.0", "mcp", "&", "other"],
-    ["cmd.exe", "/c", "npx", "-y", "rea-agents@5.0.0 & other", "mcp"],
+    ["cmd.exe", "/c", "npx", "-y", "re-tool@5.0.0", "mcp", "&", "other"],
+    ["cmd.exe", "/c", "npx", "-y", "re-tool@5.0.0 & other", "mcp"],
     ["cmd.exe", "/c", "bunx", "another-package", "mcp"],
-    ["cmd.exe", "/c", "bunx", "-y", "rea-agents@5.0.0", "mcp"],
-    ["cmd.exe", "/c", "bunx", "rea-agents@5.0.0", "mcp", "&", "other"],
+    ["cmd.exe", "/c", "bunx", "-y", "re-tool@5.0.0", "mcp"],
+    ["cmd.exe", "/c", "bunx", "re-tool@5.0.0", "mcp", "&", "other"],
   ]) {
     const original = JSON.stringify({
-      mcpServers: { rea: { command: command[0], args: command.slice(1) } },
+      mcpServers: {
+        "re-tool": { command: command[0], args: command.slice(1) },
+      },
     });
     await writeFile(configPath, original);
     expect(await systemUninstallHost(home).removeClient(client)).toMatchObject({
@@ -176,7 +178,8 @@ it.skipIf(process.platform !== "win32").each([
         : configureClientConfiguration(setupClient, {}, command)),
     ).toMatchObject({ status: "configured" });
     const decoded: unknown = JSON.parse(await readFile(configPath, "utf8"));
-    const registration = configurationSchema.parse(decoded).mcpServers.rea;
+    const registration =
+      configurationSchema.parse(decoded).mcpServers["re-tool"];
     expect([registration.command, ...registration.args]).toEqual(command);
     const entry = fileURLToPath(
       new URL("../../../scripts/rea.mjs", import.meta.url),

@@ -123,16 +123,9 @@ it("keeps every translated README and authored guide on the documentation lane",
   const readmes = (await readdir(new URL("../../../", import.meta.url))).filter(
     (name) => /^README(?:_.*)?\.md$/u.test(name),
   );
-  const translated = (
-    await readdir(new URL("../../../docs/readme/", import.meta.url))
-  )
-    .filter((name) => /^README_.*\.md$/u.test(name))
-    .map((name) => `docs/readme/${name}`);
   expect(readmes).toContain("README.md");
-  expect(translated.length).toBeGreaterThan(0);
   const head = await change(directory, [
     ...readmes,
-    ...translated,
     "docs/guide.md",
     "AGENTS.md",
     "CONTRIBUTING.md",

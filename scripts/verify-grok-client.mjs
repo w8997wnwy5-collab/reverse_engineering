@@ -262,9 +262,9 @@ const fixture = await createOpenAiModelFixture({
         diagnosticsVerified = true;
       }
       if (discovery?.status !== "ready")
-        return call("search_tool", { query: "rea", limit: 255 });
+        return call("search_tool", { query: "re-tool", limit: 255 });
       const inventory = discovery.results
-        .filter((result) => result.server === "rea")
+        .filter((result) => result.server === "re-tool")
         .flatMap((result) => result.tools);
       assert.deepEqual(
         inventory.map((tool) => tool.tool_name).sort(),
@@ -340,7 +340,7 @@ const fixture = await createOpenAiModelFixture({
 });
 const q = JSON.stringify;
 const original = `# Keep unrelated settings and server state.
-disabled_mcp_servers = ["rea", "other"]
+disabled_mcp_servers = ["re-tool", "other"]
 [cli]
 auto_update = false
 [features]
@@ -461,9 +461,11 @@ try {
   const init = events.find(
     (event) => event.type === "system" && event.subtype === "init",
   );
-  assert(init?.mcp_servers?.some((server) => server.name === "rea"));
+  assert(init?.mcp_servers?.some((server) => server.name === "re-tool"));
   assert(
-    init.mcp_servers.every((server) => ["rea", "other"].includes(server.name)),
+    init.mcp_servers.every((server) =>
+      ["re-tool", "other"].includes(server.name),
+    ),
     "Do not inherit foreign MCP configuration",
   );
   assert(

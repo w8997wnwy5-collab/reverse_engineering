@@ -172,7 +172,7 @@ it("reports a failed config rollback and retains its backup path", async () => {
   const result = await configureClientConfiguration(
     { name: "cursor", configPath: path, format: "json" },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
 
   expect(result).toEqual({
@@ -187,7 +187,7 @@ it("reports a failed config rollback and retains its backup path", async () => {
   });
   expect(await readFile(`${path}.rea.backup`, "utf8")).toBe(original);
   expect(JSON.parse(await readFile(path, "utf8"))).toMatchObject({
-    mcpServers: { rea: { command: "rea", args: ["mcp"] } },
+    mcpServers: { "re-tool": { command: "re-tool", args: ["mcp"] } },
   });
 });
 
@@ -209,7 +209,7 @@ it("preserves the first backup and reports a verified backup of the current orig
   const result = await configureClientConfiguration(
     { name: "cursor", configPath: path, format: "json" },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
   state.rejectRestore = false;
 
@@ -249,7 +249,7 @@ it("does not write config when a recovery copy disappears before verification", 
   const result = await configureClientConfiguration(
     { name: "cursor", configPath: path, format: "json" },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
   state.removeCopiedRecovery = false;
 
@@ -280,7 +280,7 @@ it("does not roll back or remove config when its initial read cleanup fails", as
     configureClientConfiguration(
       { name: "cursor", configPath: path, format: "json" },
       {},
-      ["rea", "mcp"],
+      ["re-tool", "mcp"],
     ),
   ).rejects.toBe(failure);
   expect(await readFile(path, "utf8")).toBe(original);
@@ -297,7 +297,7 @@ it("retains first-run configuration for manual recovery without deleting by path
   const result = await configureClientConfiguration(
     { name: "cursor", configPath: path, format: "json" },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
 
   expect(result).toMatchObject({
@@ -312,7 +312,7 @@ it("retains first-run configuration for manual recovery without deleting by path
   });
   expect(result).not.toHaveProperty("backupPath");
   expect(JSON.parse(await readFile(path, "utf8"))).toMatchObject({
-    mcpServers: { rea: { command: "rea", args: ["mcp"] } },
+    mcpServers: { "re-tool": { command: "re-tool", args: ["mcp"] } },
   });
 });
 
@@ -345,7 +345,7 @@ it("retains readback cleanup ownership when rollback also fails", async () => {
     await host.configureClient(
       { name: "cursor", configPath: path, format: "json" },
       {},
-      ["rea", "mcp"],
+      ["re-tool", "mcp"],
     );
   } catch (cause: unknown) {
     caught = cause;
@@ -390,7 +390,7 @@ it.each(["existing", "first-run"] as const)(
     const result = await configureClientConfiguration(
       { name: "cursor", configPath: path, format: "json" },
       {},
-      ["rea", "mcp"],
+      ["re-tool", "mcp"],
     );
 
     expect(await fs.readFile(replacement, "utf8")).toBe(foreign);
@@ -419,7 +419,7 @@ it("retains a replacement regular file when readback fails", async () => {
   const result = await configureClientConfiguration(
     { name: "cursor", configPath: path, format: "json" },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
 
   expect(await fs.readFile(path, "utf8")).toBe(foreign);
@@ -458,7 +458,7 @@ it("retains and retries both readback and publication descriptors after mixed cl
       host.configureClient(
         { name: "cursor", configPath: path, format: "json" },
         {},
-        ["rea", "mcp"],
+        ["re-tool", "mcp"],
       ),
     ).rejects.toBeInstanceOf(ConfigurationError);
     expect(state.publicationHandles).toHaveLength(1);
@@ -500,7 +500,7 @@ it("rejects a replaced publication even when the replacement passes registration
     await configureClientConfiguration(
       { name: "cursor", configPath: path, format: "json" },
       {},
-      ["rea", "mcp"],
+      ["re-tool", "mcp"],
     ),
   ).toMatchObject({ status: "failed", reason: "rollback" });
   expect(await fs.readFile(path, "utf8")).toBe(foreign);
@@ -523,7 +523,7 @@ it("retains concurrent edits to the published inode rather than overwriting them
     await configureClientConfiguration(
       { name: "cursor", configPath: path, format: "json" },
       {},
-      ["rea", "mcp"],
+      ["re-tool", "mcp"],
     ),
   ).toMatchObject({ status: "failed", reason: "rollback" });
   expect(await fs.readFile(path, "utf8")).toBe(edited);
@@ -560,7 +560,7 @@ it("does not adopt a descriptor named by an opaque publication close rejection",
       host.configureClient(
         { name: "cursor", configPath: path, format: "json" },
         {},
-        ["rea", "mcp"],
+        ["re-tool", "mcp"],
       ),
     ).rejects.toBeInstanceOf(ConfigurationError);
     state.rejectPublicationClose = false;
@@ -589,7 +589,7 @@ it.each(["symlink", "regular", "valid-readback"] as const)(
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":"original"}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":"original"}\n';
     const foreign = '{"keep":"replacement"}\n';
     await fs.writeFile(path, original);
     await fs.writeFile(replacement, foreign);
@@ -631,7 +631,7 @@ it("uninstall retains both readback and publication owners until cleanup retry",
     );
   await fs.writeFile(
     path,
-    '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n',
+    '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n',
   );
   const readOwner = await ownReadHandle(path);
   const closeRead = readOwner.handle.close.bind(readOwner.handle);
@@ -682,7 +682,8 @@ it("uninstall retains the exact owner of a failed initial config read", async ()
     await vi.importActual<typeof import("node:fs/promises")>(
       "node:fs/promises",
     );
-  const original = '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n';
+  const original =
+    '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n';
   await fs.writeFile(path, original);
   const owner = await ownReadHandle(path);
   const close = owner.handle.close.bind(owner.handle);
@@ -733,7 +734,7 @@ it("uninstall close joins a publication already admitted by its host", async () 
     );
   await fs.writeFile(
     path,
-    '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n',
+    '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n',
   );
   const arrived = createDeferred<void>();
   const release = createDeferred<void>();
@@ -821,7 +822,7 @@ it("uninstall progresses when a peer leaves a denied-close descriptor pending", 
     );
   await fs.writeFile(
     path,
-    '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n',
+    '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n',
   );
   await fs.writeFile(other, "{}");
   const owner = await ownReadHandle(other);
@@ -904,7 +905,7 @@ it.skipIf(process.platform === "win32" || process.getuid?.() === 0)(
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n';
     await fs.writeFile(path, original);
     await fs.chmod(path, 0o400);
     await fs.writeFile(foreign, "foreign");
@@ -951,7 +952,7 @@ it.skipIf(process.platform === "win32" || process.getuid?.() === 0)(
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n';
     await fs.writeFile(path, original);
     await fs.chmod(path, 0o400);
     state.rejectPublicationMode = true;
@@ -998,7 +999,7 @@ it.skipIf(process.platform === "win32" || process.getuid?.() === 0)(
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n';
     await fs.writeFile(path, original);
     await fs.chmod(path, 0o400);
     const host = systemUninstallHost(root);
@@ -1035,7 +1036,7 @@ it.each(["setup", "uninstall"] as const)(
     const original =
       operation === "setup"
         ? '{"keep":"original"}\n'
-        : '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":"original"}\n';
+        : '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":"original"}\n';
     const unrelated = '{"keep":"foreign"}\n';
     await fs.writeFile(path, original);
     await fs.writeFile(foreign, unrelated);
@@ -1051,7 +1052,7 @@ it.each(["setup", "uninstall"] as const)(
           await configureClientConfiguration(
             { name: "cursor", configPath: path, format: "json" },
             {},
-            ["rea", "mcp"],
+            ["re-tool", "mcp"],
           )
         ).status,
       ).toBe("failed");
@@ -1115,7 +1116,7 @@ it.each([
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n';
     const edited = '{"changed":"by client"}\n';
     await fs.writeFile(path, original);
     state.failReadback = false;
@@ -1148,7 +1149,7 @@ it.each(["setup", "uninstall"] as const)(
         "node:fs/promises",
       );
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n';
     const edited = '{"changed":"during staging"}\n';
     await fs.writeFile(path, original);
     state.failReadback = false;
@@ -1204,7 +1205,7 @@ it.each(["setup", "uninstall"] as const)(
       );
     await fs.writeFile(
       path,
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n',
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n',
     );
     state.failReadback = false;
     state.rejectStageRemoval = true;
@@ -1334,7 +1335,7 @@ it.each(["setup", "uninstall"] as const)(
     await fs.mkdir(foreign);
     await fs.symlink(selected, alias, "dir");
     const original =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n';
     const unrelated = '{"foreign":true}\n';
     await fs.writeFile(join(selected, "client.json"), original);
     await fs.writeFile(join(foreign, "client.json"), unrelated);

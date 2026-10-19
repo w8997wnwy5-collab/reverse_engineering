@@ -5,8 +5,8 @@ retained producer evidence. This is an offline operation: recorded URLs are
 never fetched, and no browser or proxy listener is started.
 
 ```sh
-rea inspect-web-network-capture /absolute/session.har har --json
-rea inspect-web-network-capture /absolute/session.har har --record 2 --record 0 --json
+re-tool inspect-web-network-capture /absolute/session.har har --json
+re-tool inspect-web-network-capture /absolute/session.har har --record 2 --record 0 --json
 ```
 
 ```json
@@ -87,7 +87,7 @@ Native mitmproxy decoding requires a caller-supplied **mitmdump 12.2.3 on
 Linux**. Set its absolute executable path:
 
 ```sh
-REA_MITMDUMP_COMMAND=/absolute/mitmdump rea inspect-web-network-capture /absolute/session.mitm mitmproxy --json
+REA_MITMDUMP_COMMAND=/absolute/mitmdump re-tool inspect-web-network-capture /absolute/session.mitm mitmproxy --json
 ```
 
 REA does not install mitmproxy. Its owned process uses a private configuration
@@ -106,8 +106,8 @@ Fiddler Everywhere saves traffic in **Session Archive Zip (`.saz`)** files.
 Inspect native SAZ directly, without installing Fiddler or converting to HAR:
 
 ```sh
-rea inspect-web-network-capture /absolute/session.saz saz --json
-rea inspect-web-network-capture /absolute/session.saz saz --record 0 --json
+re-tool inspect-web-network-capture /absolute/session.saz saz --json
+re-tool inspect-web-network-capture /absolute/session.saz saz --record 0 --json
 ```
 
 MCP uses the same `capture_path`, `format: "saz"`, and optional
@@ -464,8 +464,8 @@ MCP advertises the same strict named input contract used by the application. His
 Select `format: "qlog"` through `inspect_web_network_capture`, or:
 
 ```bash
-rea inspect-web-network-capture /absolute/origin.qlog qlog --json
-rea inspect-web-network-capture /absolute/origin.qlog qlog --record 95 --record 0 --json
+re-tool inspect-web-network-capture /absolute/origin.qlog qlog --json
+re-tool inspect-web-network-capture /absolute/origin.qlog qlog --record 95 --record 0 --json
 ```
 
 The initial profile is **aioquic 1.5.0, JSON qlog 0.3**: one JSON object with

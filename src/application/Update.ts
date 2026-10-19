@@ -15,7 +15,7 @@ export interface NpmInstallation {
 /** Bun global installation that owns the running package and its entry point. */
 export interface BunInstallation {
   readonly manager: "bun";
-  /** Bun's global project directory, which owns `node_modules/rea-agents`. */
+  /** Bun's global project directory, which owns `node_modules/re-tool`. */
   readonly globalDirectory: string;
   readonly packageRoot: string;
 }
@@ -118,7 +118,7 @@ const versionCheckRemediation = (
   release: Result<string, ReleaseLookupFailure>,
 ): string => {
   if (release.ok) {
-    return "REA received invalid version metadata. Check the installed version and npm registry, then rerun rea update.";
+    return "REA received invalid version metadata. Check the installed version and npm registry, then rerun re-tool update.";
   }
   const failure = release.error;
   const kind = failure.kind;
@@ -126,9 +126,9 @@ const versionCheckRemediation = (
     case "unsupported-package-manager":
       return failure.detail;
     case "unavailable":
-      return `REA could not resolve the latest release: ${failure.detail}. Retry rea update when registry access is available.`;
+      return `REA could not resolve the latest release: ${failure.detail}. Retry re-tool update when registry access is available.`;
     case "invalid-metadata":
-      return `REA could not resolve the latest release: ${failure.detail}. Check the npm release metadata, then rerun rea update.`;
+      return `REA could not resolve the latest release: ${failure.detail}. Check the npm release metadata, then rerun re-tool update.`;
     default: {
       const exhaustive: never = kind;
       throw new TypeError(
@@ -203,7 +203,7 @@ const runUpdateWorkflow = async (
       latestVersion: targetVersion,
       reason: "unknown-install-method",
       remediation:
-        "Update this installation with the package manager or source checkout that owns it. For a one-off latest invocation, use npx rea-agents@latest.",
+        "Update this installation with the package manager or source checkout that owns it. For a one-off latest invocation, use npx re-tool@latest.",
     };
   const installed = await host.installVersion(
     installation,
@@ -216,7 +216,7 @@ const runUpdateWorkflow = async (
       currentVersion,
       latestVersion: targetVersion,
       reason: "install",
-      remediation: `REA could not install ${targetVersion} in ${installation.manager === "npm" ? installation.prefix : installation.globalDirectory}: ${installed.error}. Repair this ${installation.manager} installation, then rerun rea update.`,
+      remediation: `REA could not install ${targetVersion} in ${installation.manager === "npm" ? installation.prefix : installation.globalDirectory}: ${installed.error}. Repair this ${installation.manager} installation, then rerun re-tool update.`,
     };
   const verified = await host.installedVersion(installation);
   if (!verified.ok || verified.value !== targetVersion)

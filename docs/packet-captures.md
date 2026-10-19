@@ -14,7 +14,7 @@ an enforced address-space limit:
 
 ```sh
 export REA_TSHARK_COMMAND=/absolute/path/to/tshark
-rea inspect-packet-capture /artifacts/device.pcapng \
+re-tool inspect-packet-capture /artifacts/device.pcapng \
   --fields ip.addr --fields udp.port --fields data.data \
   --display_filter 'udp' --format json
 ```
@@ -151,9 +151,9 @@ failed cleanup remains owned and can be retried.
 registration glossary before selecting fields for capture inspection:
 
 ```sh
-rea inspect-packet-fields --query usb
-rea inspect-packet-fields --kind fields --protocol usb --query idVendor
-rea inspect-packet-fields --kind fields --protocol udp --all
+re-tool inspect-packet-fields --query usb
+re-tool inspect-packet-fields --kind fields --protocol usb --query idVendor
+re-tool inspect-packet-fields --kind fields --protocol udp --all
 ```
 
 `kind` defaults to `protocols`; `fields` selects field definitions. `protocol`

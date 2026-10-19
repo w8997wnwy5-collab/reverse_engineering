@@ -414,11 +414,12 @@ const registrationAligned = ({
     return "stale";
   if (client.format === "vscode" && registration.type !== "stdio")
     return "stale";
-  // A Harness registration only connects as the rea stdio server; another
+  // A Harness registration only connects as the owned stdio server; another
   // server name or transport leaves the session without REA tools.
   if (
     client.format === "dsh" &&
-    (registration.serverName !== "rea" || registration.transport !== "stdio")
+    (registration.serverName !== PRODUCT_IDENTITY.mcpServerKey ||
+      registration.transport !== "stdio")
   )
     return "stale";
   if (
@@ -499,13 +500,13 @@ const parseRegistration = (
 /** A client that rewrites its file from memory must be quit before setup. */
 const remediation = (client: SetupClient): string => {
   if (client.quitBeforeSetup !== true)
-    return "Run rea setup to refresh this registration, then restart the client.";
+    return "Run re-tool setup to refresh this registration, then restart the client.";
   const name = client.displayName ?? client.name;
-  return `Quit ${name} fully, run rea setup to refresh this registration, then start ${name} again. A running ${name} can rewrite its configuration from memory and drop the registration.`;
+  return `Quit ${name} fully, run re-tool setup to refresh this registration, then start ${name} again. A running ${name} can rewrite its configuration from memory and drop the registration.`;
 };
 
 const unknownEntryPointRemediation = (): string =>
-  "The existing registration was retained because its executable identity cannot be verified. Check the registered launcher path, symlink targets and access permissions. Run the installed REA CLI or a supported package runner, then rerun rea doctor; no registration was changed.";
+  "The existing registration was retained because its executable identity cannot be verified. Check the registered launcher path, symlink targets and access permissions. Run the installed REA CLI or a supported package runner, then rerun re-tool doctor; no registration was changed.";
 
 const configuredStatus = (
   client: SetupClient,
@@ -582,7 +583,7 @@ const packageVersionRemediation = (
   packageReference: string,
   client: SetupClient,
 ): string =>
-  `This registration requests ${packageReference}, while the current REA CLI package is ${PRODUCT_IDENTITY.packageVersion}. REA does not resolve package-runner requests during doctor; update the registration with rea setup --client ${client.name}, then restart the client.`;
+  `This registration requests ${packageReference}, while the current REA CLI package is ${PRODUCT_IDENTITY.packageVersion}. REA does not resolve package-runner requests during doctor; update the registration with re-tool setup --client ${client.name}, then restart the client.`;
 
 const unavailableStatus = (
   client: SetupClient,
@@ -613,7 +614,7 @@ const clientEvidencePresent = async (
       if (!isMissing(cause))
         unavailable ??= {
           path,
-          detail: `Client configuration evidence at ${path} could not be inspected: ${cause instanceof Error ? cause.message : String(cause)}. Check file permissions and rerun rea doctor.`,
+          detail: `Client configuration evidence at ${path} could not be inspected: ${cause instanceof Error ? cause.message : String(cause)}. Check file permissions and rerun re-tool doctor.`,
         };
     }
   }

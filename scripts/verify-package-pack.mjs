@@ -30,12 +30,11 @@ export async function verifyPackagePack({ root, workspace }) {
     packedManifest.dependencies?.["@lydell/node-pty"] !== "1.1.0"
   )
     throw new Error("package retained a lifecycle-dependent PTY installation");
+  if (packedManifest.bin?.["re-tool"] !== "scripts/rea.mjs")
+    throw new Error("package did not expose the re-tool command entry point");
   if (
-    packedManifest.bin?.rea !== "scripts/rea.mjs" ||
-    packedManifest.bin?.["rea-agents"] !== "scripts/rea.mjs"
+    packedManifest.mcpName !== "io.github.w8997wnwy5-collab/reverse_engineering"
   )
-    throw new Error("package did not expose both rea command entry points");
-  if (packedManifest.mcpName !== "io.github.morluto/rea")
     throw new Error("package did not retain its MCP Registry ownership marker");
   if (packedFiles.some((path) => path.startsWith("package/.agents/")))
     throw new Error(

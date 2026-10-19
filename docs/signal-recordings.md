@@ -10,7 +10,7 @@ those hosts. It does not acquire samples or communicate with hardware.
 
 ```sh
 export REA_SIGROK_COMMAND=/absolute/path/to/sigrok-cli
-rea decode-signal-recording /artifacts/uart.vcd \
+re-tool decode-signal-recording /artifacts/uart.vcd \
   --decoders uart:rx=RX:baudrate=9600 --input_format vcd \
   --annotations uart=rx-data --format json
 ```
@@ -113,9 +113,9 @@ remains owned and retryable.
 sigrok catalog without opening a recording or scanning devices:
 
 ```sh
-rea inspect-signal-decoders --query uart
-rea inspect-signal-decoders --decoder uart --query baud
-rea inspect-signal-decoders --decoder i2c --offset 0 --limit 50
+re-tool inspect-signal-decoders --query uart
+re-tool inspect-signal-decoders --decoder uart --query baud
+re-tool inspect-signal-decoders --decoder i2c --offset 0 --limit 50
 ```
 
 Omit `decoder` to search decoder IDs and names. Supply one exact decoder ID to

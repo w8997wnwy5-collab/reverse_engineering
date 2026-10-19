@@ -442,7 +442,7 @@ describe("canonical skill discovery", () => {
       join(configDirectory, ".claude.json"),
       JSON.stringify({
         mcpServers: {
-          rea: {
+          "re-tool": {
             command: "npx",
             args: ["-y", PRODUCT_IDENTITY.registrationPackageSpecifier, "mcp"],
           },

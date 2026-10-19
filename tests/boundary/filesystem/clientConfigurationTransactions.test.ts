@@ -61,7 +61,7 @@ describe("uninstall backups after edits made since setup", () => {
     const beforeSetup = '{"keep":"before setup"}\n';
     await writeFile(configPath, beforeSetup);
     expect(
-      await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+      await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toMatchObject({ status: "configured" });
     const configured = JSON.parse(await readFile(configPath, "utf8")) as Record<
       string,
@@ -202,7 +202,7 @@ it("accepts a literal UTF-8 replacement character without changing its value", a
   const result = await configureClientConfiguration(
     { name: "cursor", format: "json", configPath },
     {},
-    ["rea", "mcp"],
+    ["re-tool", "mcp"],
   );
   expect(result.status).toBe("configured");
   expect(await readFile(`${configPath}.rea.backup`)).toEqual(original);
@@ -221,13 +221,15 @@ it("previews and creates a current recovery backup while preserving the first ba
   const recoveryPath = `${configPath}.rea.backup.${createHash("sha256")
     .update(currentOriginal, "utf8")
     .digest("hex")}.recovery`;
-  expect(await inspectClientConfiguration(client, {}, ["rea", "mcp"])).toEqual({
+  expect(
+    await inspectClientConfiguration(client, {}, ["re-tool", "mcp"]),
+  ).toEqual({
     status: "update",
     backupPath: recoveryPath,
   });
 
   expect(
-    await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+    await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
   ).toEqual({ status: "configured", backupPath: recoveryPath });
   expect(await readFile(`${configPath}.rea.backup`, "utf8")).toBe(
     firstOriginal,
@@ -249,13 +251,13 @@ it("blocks configuration when the planned content-addressed backup is occupied",
   await writeFile(recoveryPath, "occupied by other data");
 
   expect(
-    await inspectClientConfiguration(client, {}, ["rea", "mcp"]),
+    await inspectClientConfiguration(client, {}, ["re-tool", "mcp"]),
   ).toMatchObject({
     status: "invalid",
     remediation: expect.stringContaining(recoveryPath),
   });
   expect(
-    await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+    await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
   ).toEqual({ status: "failed", reason: "backup" });
   expect(await readFile(configPath, "utf8")).toBe(currentOriginal);
   expect(await readFile(`${configPath}.rea.backup`, "utf8")).toBe(
@@ -293,11 +295,11 @@ describe("TOML client configuration comparison", () => {
     const value = "-inf";
     const root = await createTestTempDirectory("rea-client-toml-");
     const configPath = join(root, "config.toml");
-    const original = `unrelated = ${value}\n[mcp_servers.rea]\ncommand = "old"\nstartup_timeout_sec = ${value}\n`;
+    const original = `unrelated = ${value}\n[mcp_servers.re-tool]\ncommand = "old"\nstartup_timeout_sec = ${value}\n`;
     await writeFile(configPath, original);
     const client = { name: "codex", format: "toml", configPath } as const;
     expect(
-      await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+      await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toEqual({
       status: "configured",
       backupPath: `${configPath}.rea.backup`,
@@ -307,7 +309,7 @@ describe("TOML client configuration comparison", () => {
       `unrelated = ${value}`,
     );
     expect(
-      await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+      await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toEqual({
       status: "unchanged",
     });
@@ -318,13 +320,13 @@ const unrelatedToml = [
   "# Keep this explanation.",
   'notify = ["a", "b"]',
   "literal = 'C:\\demo\\path'",
-  'disabled_mcp_servers = ["rea", "other"] # Not a Codex registration.',
+  'disabled_mcp_servers = ["re-tool", "other"] # Not a Codex registration.',
   "",
 ].join("\n");
 
 const unrelatedServer = [
   "# Keep the other server.",
-  '[mcp_servers."rea.env"]',
+  '[mcp_servers."re-tool.env"]',
   "command = 'other'",
   "",
 ].join("\n");
@@ -333,7 +335,7 @@ const unrelatedValues = (text: string) => {
   const document = parseToml(text);
   const servers = document.mcp_servers;
   if (typeof servers === "object" && servers !== null) {
-    Reflect.deleteProperty(servers, "rea");
+    Reflect.deleteProperty(servers, "re-tool");
     if (Object.keys(servers).length === 0) delete document.mcp_servers;
   }
   return document;
@@ -348,17 +350,17 @@ describe("Codex configuration text preservation", () => {
     },
     {
       name: "quoted tables and nested environment",
-      original: `${unrelatedToml}[mcp_servers."rea"]\ncommand = "old"\n[mcp_servers.rea.env]\nOLD = "value"\n${unrelatedServer}`,
+      original: `${unrelatedToml}[mcp_servers."re-tool"]\ncommand = "old"\n[mcp_servers.re-tool.env]\nOLD = "value"\n${unrelatedServer}`,
       preserved: [unrelatedToml, unrelatedServer],
     },
     {
       name: "dotted registration keys",
-      original: `${unrelatedToml}mcp_servers.rea.command = "old"\n${unrelatedServer}`,
+      original: `${unrelatedToml}mcp_servers.re-tool.command = "old"\n${unrelatedServer}`,
       preserved: [unrelatedToml, unrelatedServer],
     },
     {
       name: "inline server table",
-      original: `${unrelatedToml}mcp_servers = { rea = { command = "old" }, other = { command = 'other' } } # Shared table.\n`,
+      original: `${unrelatedToml}mcp_servers = { re-tool = { command = "old" }, other = { command = 'other' } } # Shared table.\n`,
       preserved: [
         unrelatedToml,
         "other = { command = 'other' }",
@@ -368,13 +370,13 @@ describe("Codex configuration text preservation", () => {
     {
       name: "BOM, CRLF, and multiline text resembling a registration",
       original:
-        `\uFEFF${unrelatedToml}banner = '''\n[mcp_servers.rea]\n# This is string content.\n'''\n`.replaceAll(
+        `\uFEFF${unrelatedToml}banner = '''\n[mcp_servers.re-tool]\n# This is string content.\n'''\n`.replaceAll(
           "\n",
           "\r\n",
         ),
       preserved: [
         unrelatedToml.replaceAll("\n", "\r\n"),
-        "banner = '''\r\n[mcp_servers.rea]\r\n# This is string content.\r\n'''",
+        "banner = '''\r\n[mcp_servers.re-tool]\r\n# This is string content.\r\n'''",
       ],
     },
     {
@@ -391,7 +393,7 @@ describe("Codex configuration text preservation", () => {
       await writeFile(configPath, original);
 
       expect(
-        await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+        await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
       ).toMatchObject({ status: "configured" });
       const configured = await readFile(configPath, "utf8");
       for (const text of preserved) expect(configured).toContain(text);
@@ -400,7 +402,7 @@ describe("Codex configuration text preservation", () => {
         original.startsWith("\uFEFF"),
       );
       expect(
-        await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+        await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
       ).toEqual({ status: "unchanged" });
       expect(await readFile(configPath, "utf8")).toBe(configured);
 
@@ -410,7 +412,7 @@ describe("Codex configuration text preservation", () => {
       const removed = await readFile(configPath, "utf8");
       for (const text of preserved) expect(removed).toContain(text);
       expect(unrelatedValues(removed)).toEqual(unrelatedValues(original));
-      expect(parseToml(removed)).not.toHaveProperty("mcp_servers.rea");
+      expect(parseToml(removed)).not.toHaveProperty("mcp_servers.re-tool");
       expect(removed.startsWith("\uFEFF")).toBe(original.startsWith("\uFEFF"));
       expect(await readFile(`${configPath}.rea.backup`, "utf8")).toBe(original);
     },
@@ -422,12 +424,12 @@ describe("Codex configuration text preservation", () => {
     const client = { name: "codex", format: "toml", configPath } as const;
     const original = 'notify = ["a", "b"]\n';
     await writeFile(configPath, original);
-    await configureClientConfiguration(client, {}, ["rea", "mcp"]);
+    await configureClientConfiguration(client, {}, ["re-tool", "mcp"]);
     expect((await systemUninstallHost(root).removeClient(client)).status).toBe(
       "removed",
     );
     expect(await readFile(`${configPath}.rea.backup`, "utf8")).toBe(original);
-    await configureClientConfiguration(client, {}, ["rea", "mcp"]);
+    await configureClientConfiguration(client, {}, ["re-tool", "mcp"]);
     expect(await readFile(`${configPath}.rea.backup`, "utf8")).toBe(original);
   });
 
@@ -436,10 +438,10 @@ describe("Codex configuration text preservation", () => {
     const configPath = join(root, "config.toml");
     const client = { name: "codex", format: "toml", configPath } as const;
     const original =
-      "# Keep this explanation.\n[mcp_servers.rea]\ncommand = [broken\n";
+      "# Keep this explanation.\n[mcp_servers.re-tool]\ncommand = [broken\n";
     await writeFile(configPath, original);
     expect(
-      await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+      await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toEqual({ status: "failed", reason: "readback" });
     expect((await systemUninstallHost(root).removeClient(client)).status).toBe(
       "failed",
@@ -460,7 +462,7 @@ it
     const configPath = join(root, "config.json");
     await writeFile(
       configPath,
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}},"keep":true}\n',
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}},"keep":true}\n',
     );
     await chmod(configPath, mode);
     const host = systemUninstallHost(root);

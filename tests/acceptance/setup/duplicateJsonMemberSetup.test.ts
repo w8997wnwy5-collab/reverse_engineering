@@ -7,9 +7,9 @@ import { cliTest, type TestCli } from "../../support/cli/cliFixture.js";
 
 // JSON.parse, JSONC parse, and native Claude Code read the last duplicate.
 const shadowParent = '"mcpServers": {"shadow": {"command": "/usr/bin/false"}},';
-const shadowLeaf = '"rea": {"command": "/usr/bin/false"},';
+const shadowLeaf = '"re-tool": {"command": "/usr/bin/false"},';
 const owned =
-  '"rea": {"command": "npx", "args": ["-y", "rea-agents@6.6.0", "mcp"]}';
+  '"re-tool": {"command": "npx", "args": ["-y", "re-tool@6.6.0", "mcp"]}';
 
 const runIn = (cli: TestCli, home: string) => (arguments_: readonly string[]) =>
   cli.run({
@@ -27,7 +27,7 @@ const setupArguments = (client: string) =>
   ["setup", "--client", client, "--skill=false", "--json", "--yes"] as const;
 
 const openCodeOwned =
-  '{"type":"local","command":["npx","-y","rea-agents@6.6.0","mcp"]}';
+  '{"type":"local","command":["npx","-y","re-tool@6.6.0","mcp"]}';
 const openCodeForeign = '{"type":"local","command":["/usr/bin/false"]}';
 
 const writeConfiguration = async (path: string, text: string) => {
@@ -41,8 +41,8 @@ for (const [layout, original] of [
     `{\n  ${shadowParent}\n  "mcpServers": {"peer": {"command": "/usr/bin/true"}}\n}\n`,
   ],
   [
-    "a repeated rea member",
-    `{\n  "mcpServers": {${shadowLeaf} "rea": {"command": "/usr/bin/true"}}\n}\n`,
+    "a repeated re-tool member",
+    `{\n  "mcpServers": {${shadowLeaf} "re-tool": {"command": "/usr/bin/true"}}\n}\n`,
   ],
 ] as const)
   cliTest(
@@ -65,7 +65,9 @@ for (const [layout, original] of [
         layout === "a repeated server table" ? shadowParent : shadowLeaf,
       );
       expect(JSON.parse(configured)).toMatchObject({
-        mcpServers: { rea: { command: expect.not.stringMatching(/^\/usr/) } },
+        mcpServers: {
+          "re-tool": { command: expect.not.stringMatching(/^\/usr/) },
+        },
       });
 
       const repeated = await run(setupArguments("claude_code"));
@@ -98,7 +100,7 @@ cliTest(
     const configured = await readFile(config, "utf8");
     expect(configured.startsWith(head)).toBe(true);
     expect(configured).toContain("// peer");
-    expect(configured.indexOf('"rea"')).toBeGreaterThan(head.length);
+    expect(configured.indexOf('"re-tool"')).toBeGreaterThan(head.length);
   },
 );
 
@@ -158,7 +160,7 @@ cliTest(
     const home = await createTestTempDirectory("rea-json-owned-repeats-");
     const config = join(home, ".claude.json");
     const inactive = '{"inactivePeer":{"command":"/usr/bin/false"}}';
-    const active = `{"rea":{"command":"npx","args":["-y","rea-agents@6.6.0","mcp"]},"peer":{"command":"/usr/bin/true"},"rea":{"command":"npx","args":["-y","rea-agents@6.5.0","mcp"]}}`;
+    const active = `{"re-tool":{"command":"npx","args":["-y","re-tool@6.6.0","mcp"]},"peer":{"command":"/usr/bin/true"},"re-tool":{"command":"npx","args":["-y","re-tool@6.5.0","mcp"]}}`;
     const original = `{"mcpServers":${inactive},"mcpServers":${active}}\n`;
     await writeFile(config, original);
 
@@ -177,7 +179,7 @@ cliTest(
     });
     expect(afterRemoval).toContain(`"mcpServers":${inactive}`);
     expect(afterRemoval).toContain('"peer":{"command":"/usr/bin/true"}');
-    expect(afterRemoval).not.toContain("rea-agents@");
+    expect(afterRemoval).not.toContain("re-tool@");
     expect(await readFile(`${config}.rea.backup`, "utf8")).toBe(original);
 
     const repeated = await run(["uninstall", "--json"]);
@@ -195,7 +197,7 @@ cliTest(
     const claudeOriginal = `{"mcpServers":{${owned}}}\n`;
     await writeFile(claude, claudeOriginal);
     const cursor = join(home, ".cursor", "mcp.json");
-    const cursorOriginal = `{"mcpServers":{"rea":null,${owned}}}\n`;
+    const cursorOriginal = `{"mcpServers":{"re-tool":null,${owned}}}\n`;
     await writeConfiguration(cursor, cursorOriginal);
 
     const removed = await runIn(cli, home)(["uninstall", "--json"]);
@@ -228,7 +230,7 @@ cliTest(
     const claudeOriginal = `{"mcpServers":{${owned}}}\n`;
     await writeFile(claude, claudeOriginal);
     const openCode = join(home, ".config", "opencode", "opencode.json");
-    const openCodeOriginal = `{"mcp":{"servers":{"rea":${openCodeOwned}},"rea":${openCodeForeign}}}\n`;
+    const openCodeOriginal = `{"mcp":{"servers":{"re-tool":${openCodeOwned}},"re-tool":${openCodeForeign}}}\n`;
     await writeConfiguration(openCode, openCodeOriginal);
 
     const removed = await runIn(cli, home)(["uninstall", "--json"]);
@@ -258,7 +260,7 @@ cliTest(
   async ({ cli }) => {
     const home = await createTestTempDirectory("rea-json-opencode-migration-");
     const config = join(home, ".config", "opencode", "opencode.json");
-    const original = `{"mcp":{"servers":{"peer":{"type":"local","command":["/usr/bin/true"]}},"rea":${openCodeForeign},"rea":${openCodeForeign}}}\n`;
+    const original = `{"mcp":{"servers":{"peer":{"type":"local","command":["/usr/bin/true"]}},"re-tool":${openCodeForeign},"re-tool":${openCodeForeign}}}\n`;
     await writeConfiguration(config, original);
 
     const setup = await runIn(cli, home)(setupArguments("opencode"));
@@ -269,11 +271,11 @@ cliTest(
     const { mcp } = JSON.parse(await readFile(config, "utf8")) as {
       mcp: Record<string, unknown> & { servers: Record<string, unknown> };
     };
-    expect(Object.hasOwn(mcp, "rea")).toBe(false);
+    expect(Object.hasOwn(mcp, "re-tool")).toBe(false);
     const launcher = resolve("scripts/rea.mjs");
     expect(mcp.servers).toMatchObject({
       peer: { command: ["/usr/bin/true"] },
-      rea: {
+      "re-tool": {
         type: "local",
         command:
           process.platform === "win32"

@@ -8,7 +8,7 @@ required. REA does not install tools or fetch artifacts and does not execute WAS
 returns `target_unavailable` with category `unsupported_target` and constraint
 `wasm_requires_static_inspection`, including the selected path in a valid
 `inspect_wasm_artifact` call. Use that target-free tool or
-`rea inspect-wasm-artifact <path> --format json` with the toolchain below.
+`re-tool inspect-wasm-artifact <path> --format json` with the toolchain below.
 Check `binary_session` for configured capability availability. A recognized
 header is not validation of the complete module; missing WABT is reported
 separately as an unavailable capability, not as missing native engine support.
@@ -27,7 +27,7 @@ private-workspace controls must also be available. The real-tool profile has
 been exercised on macOS arm64; other hosts require their own verification.
 
 ```bash
-REA_WABT_BIN_DIRECTORY=/absolute/wabt/bin rea inspect-wasm-artifact \
+REA_WABT_BIN_DIRECTORY=/absolute/wabt/bin re-tool inspect-wasm-artifact \
   /artifacts/module.wasm --glue_paths /artifacts/glue.js \
   --candidate_paths /artifacts/other/module.wasm --format json
 ```
@@ -100,7 +100,7 @@ Candidates are caller-selected files; their identity does not imply validation.
 
 Both CLI and MCP use the same typed port and application service. MCP publishes
 SDK-compatible schemas and records Evidence for `get_evidence_bundle` readback.
-See [WABT provenance](https://github.com/morluto/rea/blob/main/third_party/wabt/README.md) and
+See [WABT provenance](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/third_party/wabt/README.md) and
 [testing](testing.md#offline-wasm-artifacts) for real-tool verification.
 
 ## Compare core-module interfaces
@@ -118,7 +118,7 @@ records, or exact retained references in the current MCP session, and required
 WABT toolchain. CLI uses portable inline Evidence in one JSON document:
 
 ```bash
-rea compare-wasm-interfaces comparison-input.json --json
+re-tool compare-wasm-interfaces comparison-input.json --json
 ```
 
 ```json

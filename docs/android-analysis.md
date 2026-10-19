@@ -2,7 +2,7 @@
 
 REA wraps an existing headless JADX engine through `src/android/`. Its source is
 kept as an unmodified, commit-pinned Git submodule; see
-[upstream provenance](https://github.com/morluto/rea/blob/main/third_party/README.md). CLI and MCP use the same
+[upstream provenance](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/third_party/README.md). CLI and MCP use the same
 application workflow and return artifact-bound Evidence inline.
 
 This family is present on repository main and in npm 4.1.0. Check the
@@ -39,7 +39,7 @@ unverified.
 Use a **full JDK 17 or newer** (including its compiler module) and
 [**jadx-headless-mcp 0.7.1**](https://github.com/1013503897/jadx-headless-mcp/releases/download/v0.7.1/jadx-headless-mcp-0.7.1-all.jar).
 Verify the downloaded JAR's SHA-256 against
-[REA's pinned release metadata](https://github.com/morluto/rea/blob/main/src/android/JadxRelease.ts)
+[REA's pinned release metadata](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/src/android/JadxRelease.ts)
 before using it. The following download and verification commands work for npm
 package consumers as well as repository checkouts; the repository-only
 `npm run fixtures:android` helper is not included in the npm package.
@@ -87,7 +87,7 @@ inside these environment values:
 ```powershell
 $env:REA_JADX_MCP_JAR = 'D:\tools\jadx-headless-mcp-0.7.1-all.jar'
 $env:JAVA_HOME = 'D:\tools\jdk-21'
-rea inspect-android-package 'D:\targets\Example.apk'
+re-tool inspect-android-package 'D:\targets\Example.apk'
 ```
 
 REA selects `JAVA_HOME\bin\java.exe`, or resolves `java.exe` on the selected
@@ -114,14 +114,14 @@ the pinned JADX 0.7.1 JAR; see the real verification lane below.
 ## Answer an analyst question
 
 ```sh
-rea inspect-android-package /path/Example.apk
-rea search-android-classes /path/Example.apk MainActivity
-rea inspect-android-class /path/Example.apk example.MainActivity
-rea inspect-android-method /path/Example.apk example.MainActivity onCreate
-rea inspect-android-method /path/Example.apk example.MainActivity select --overload-index 1
-rea trace-android-references /path/Example.apk example.MainActivity
-rea trace-android-references /path/Example.apk example.MainActivity --method-name onCreate
-rea trace-android-references /path/Example.apk example.MainActivity --method-name select --overload-index 1
+re-tool inspect-android-package /path/Example.apk
+re-tool search-android-classes /path/Example.apk MainActivity
+re-tool inspect-android-class /path/Example.apk example.MainActivity
+re-tool inspect-android-method /path/Example.apk example.MainActivity onCreate
+re-tool inspect-android-method /path/Example.apk example.MainActivity select --overload-index 1
+re-tool trace-android-references /path/Example.apk example.MainActivity
+re-tool trace-android-references /path/Example.apk example.MainActivity --method-name onCreate
+re-tool trace-android-references /path/Example.apk example.MainActivity --method-name select --overload-index 1
 ```
 
 Equivalent MCP methods are `inspect_android_package`, `search_android_classes`,
@@ -234,7 +234,7 @@ only when that destination directory cannot keep both names. Project that
 Evidence with the execution-free inventory tool:
 
 ```sh
-rea project-android-application-graph '{"inventory_evidence":[<inventory_artifact Evidence>]}'
+re-tool project-android-application-graph '{"inventory_evidence":[<inventory_artifact Evidence>]}'
 ```
 
 ```json
@@ -337,7 +337,7 @@ export REA_JADX_OPERATION_TIMEOUT_MS=600000
 The value must be a decimal millisecond count from 1 to 2147483647; anything
 else is refused before Java starts. The same deadline bounds each upstream
 call, a timeout reports the selected value, and a passing JADX configuration
-check in `rea doctor` reports the effective `operation_timeout_ms`. Explicit
+check in `re-tool doctor` reports the effective `operation_timeout_ms`. Explicit
 cancellation still ends the operation immediately, and partial observations
 and owned-process cleanup are unchanged. Raising the deadline does not extend
 the bridge's 30-second startup handshake or the upstream **90-second**

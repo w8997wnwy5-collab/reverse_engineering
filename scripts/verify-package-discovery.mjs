@@ -54,7 +54,7 @@ export function packageSetupSupport(checks, host) {
 }
 
 /**
- * Whether `rea setup --install-hopper` can install Hopper automatically here.
+ * Whether `re-tool setup --install-hopper` can install Hopper automatically here.
  * On macOS the doctor host check already is the owner's installer predicate
  * (macOS 12 or later); on Linux it reports REA host support instead, so the
  * distribution's own parsed applicability governs.

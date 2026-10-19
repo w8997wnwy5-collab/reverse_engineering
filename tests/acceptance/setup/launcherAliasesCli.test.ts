@@ -6,8 +6,8 @@ import { createTestTempDirectory } from "../../fixtures/temporaryDirectory.js";
 import { cliTest } from "../../support/cli/cliFixture.js";
 
 cliTest.skipIf(process.platform === "win32").for([
-  ["rea", "rea-agents"],
-  ["rea-agents", "rea"],
+  ["re-tool", "re-tool-alias"],
+  ["re-tool-alias", "re-tool"],
 ] as const)(
   "recognizes setup through %s when doctor and uninstall use %s",
   async ([registered, alternate], { processes }) => {
@@ -75,7 +75,7 @@ cliTest.skipIf(process.platform === "win32").for([
     const directory = join(home, ".cursor");
     const config = join(directory, "mcp.json");
     await mkdir(directory);
-    const launcher = join(home, "rea");
+    const launcher = join(home, "re-tool");
     if (failure === "dangling")
       await symlink(join(home, "removed-release.mjs"), launcher);
     else {
@@ -88,7 +88,7 @@ cliTest.skipIf(process.platform === "win32").for([
         : [process.execPath, launcher, "mcp"];
     const original = JSON.stringify({
       mcpServers: {
-        rea: { command: command[0], args: command.slice(1) },
+        "re-tool": { command: command[0], args: command.slice(1) },
         unrelated: { command: "other-server" },
       },
     });
@@ -136,19 +136,19 @@ cliTest.skipIf(process.platform === "win32")(
     const home = join(root, "home");
     const config = join(home, ".cursor/mcp.json");
     await mkdir(join(home, ".cursor"), { recursive: true });
-    const current = join(root, "rea");
+    const current = join(root, "re-tool");
     await symlink(resolve("scripts/rea.mjs"), current);
     const other = join(root, "other");
     await mkdir(join(other, "child"), { recursive: true });
-    await writeFile(join(other, "rea"), "#!/bin/sh\nprintf foreign\n", {
+    await writeFile(join(other, "re-tool"), "#!/bin/sh\nprintf foreign\n", {
       mode: 0o700,
     });
     await symlink(join(other, "child"), join(root, "link"));
-    const candidate = `${root}/link/../rea`;
+    const candidate = `${root}/link/../re-tool`;
     expect(await readFile(candidate, "utf8")).toContain("printf foreign");
     const original = JSON.stringify({
       mcpServers: {
-        rea: { command: candidate, args: ["mcp"] },
+        "re-tool": { command: candidate, args: ["mcp"] },
         unrelated: { command: "other-server" },
       },
     });

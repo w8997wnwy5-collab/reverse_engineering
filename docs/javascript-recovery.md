@@ -50,11 +50,11 @@ Both give the same binary (SHA-256
 ## Recover and analyze
 
 ```sh
-rea recover-javascript-sources /tmp/web-scripts/app.js /tmp/recovered-app --json
-rea analyze-javascript-application /tmp/recovered-app/modules --json
+re-tool recover-javascript-sources /tmp/web-scripts/app.js /tmp/recovered-app --json
+re-tool analyze-javascript-application /tmp/recovered-app/modules --json
 
 # Recover related code-split chunks together; repeat --additional-path.
-rea recover-javascript-sources /tmp/web-scripts/main.js /tmp/recovered-chunks \
+re-tool recover-javascript-sources /tmp/web-scripts/main.js /tmp/recovered-chunks \
   --additional-path /tmp/web-scripts/runtime.js \
   --additional-path /tmp/web-scripts/shared.js \
   --additional-path /tmp/web-scripts/checkout.chunk.js --json

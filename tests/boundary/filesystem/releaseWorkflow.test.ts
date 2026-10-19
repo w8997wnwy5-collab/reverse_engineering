@@ -99,11 +99,9 @@ it("validates the source before release creation and the prepared candidate befo
 
 it("keeps main pushes proposal-only and gates merged-release automation", async () => {
   const workflow = await readReleaseWorkflow();
-  expect(workflow.on.push).toEqual({ branches: ["main"] });
-  expect(workflow.on.pull_request).toMatchObject({
-    types: ["closed"],
-    branches: ["main"],
-  });
+  // This repository publishes nothing automatically: releases run on demand.
+  expect(workflow.on.push).toBeUndefined();
+  expect(workflow.on.pull_request).toBeUndefined();
   const proposal = workflow.jobs["release-proposal"];
   expect(proposal.if).toBe("github.event_name == 'push'");
   const action = proposal.steps.find((step) =>

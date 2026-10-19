@@ -136,7 +136,7 @@ describe("MCP runtime errors", () => {
       ),
     ).toBe(1);
     expect(output).toEqual([
-      "REA could not start its MCP connection. Restart REA from your MCP client; run `rea doctor` if it fails again.\n",
+      "REA could not start its MCP connection. Restart REA from your MCP client; run `re-tool doctor` if it fails again.\n",
     ]);
   });
 
@@ -171,7 +171,7 @@ describe("MCP runtime errors", () => {
       (code) => exitCodes.push(code),
     );
     expect(output).toEqual([
-      "REA could not start. Run `rea doctor`, then restart REA from your MCP client.\n",
+      "REA could not start. Run `re-tool doctor`, then restart REA from your MCP client.\n",
     ]);
     expect(exitCodes).toEqual([1]);
   });

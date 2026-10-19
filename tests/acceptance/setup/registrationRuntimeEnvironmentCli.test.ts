@@ -104,7 +104,7 @@ cliTest.for([
               ],
             },
           ])
-        : JSON.stringify({ mcpServers: { rea: entry } });
+        : JSON.stringify({ mcpServers: { "re-tool": entry } });
     };
     const valueMarker = "reaNulFixtureValue_6c04e2";
     const original = registration(
@@ -209,7 +209,7 @@ for (const scenario of scenarios)
                     id: "rea-mcp",
                     name: "@deepseek-ai/dsh-mcp-client",
                     config: {
-                      serverName: "rea",
+                      serverName: "re-tool",
                       transport: "stdio",
                       ...server,
                     },
@@ -217,7 +217,7 @@ for (const scenario of scenarios)
                 ],
               },
             ])
-          : JSON.stringify({ mcpServers: { rea: server } });
+          : JSON.stringify({ mcpServers: { "re-tool": server } });
       };
       const original = registration(scenario.invalid);
       await writeFile(config, original);
@@ -276,7 +276,7 @@ for (const scenario of scenarios)
       expect(configured.exitCode, configured.stdout).toBe(0);
       const text = await readFile(config, "utf8");
       const parsed = parseClientConfiguration(text, scenario.format);
-      expect(effectiveClientServer(parsed, "rea")).toMatchObject({
+      expect(effectiveClientServer(parsed, "re-tool")).toMatchObject({
         env: { CALLER_SETTING: "keep exactly", ...scenario.repaired },
       });
       expect(await readFile(`${config}.rea.backup`, "utf8")).toBe(repaired);
@@ -307,7 +307,7 @@ cliTest(
     const content = (env: Record<string, string>) =>
       JSON.stringify({
         mcp: {
-          rea: clientRegistrationEntry(
+          "re-tool": clientRegistrationEntry(
             "opencode",
             [resolve("scripts/rea.mjs"), "mcp"],
             env,
@@ -435,7 +435,7 @@ cliTest(
     const codexConfig = await readFile(join(codexHome, "config.toml"), "utf8");
     const codexRegistration = effectiveClientServer(
       parseClientConfiguration(codexConfig, "toml"),
-      "rea",
+      "re-tool",
     );
     expect(codexRegistration).toMatchObject({ tool_timeout_sec: 3021 });
     expect(codexConfig).toContain('REA_JEB_MCP_TIMEOUT_MS = "2900003"');
@@ -444,7 +444,7 @@ cliTest(
     const kimiPath = join(kimiHome, "mcp.json");
     const kimiRegistration = effectiveClientServer(
       parseClientConfiguration(await readFile(kimiPath, "utf8"), "kimi"),
-      "rea",
+      "re-tool",
     );
     expect(kimiRegistration).toMatchObject({
       toolTimeoutMs: 3_020_003,
@@ -531,7 +531,7 @@ for (const [client, provider] of [
       expect(
         effectiveClientServer(
           parseClientConfiguration(text, client === "codex" ? "toml" : "kimi"),
-          "rea",
+          "re-tool",
         ),
       ).toMatchObject({
         ...(client === "codex"

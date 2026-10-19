@@ -202,7 +202,7 @@ describe("setup workflow", () => {
         config_path: "/cursor.json",
         command: [process.execPath, "./rea.mjs", "mcp"],
         state: "stale",
-        remediation: "Run rea setup to refresh this registration.",
+        remediation: "Run re-tool setup to refresh this registration.",
       },
     ];
 
@@ -455,7 +455,7 @@ describe("setup workflow lifecycle and provider planning", () => {
       {
         client: "codex",
         config_path: "/codex.toml",
-        command: ["rea", "mcp"],
+        command: ["re-tool", "mcp"],
         state: "aligned",
         remediation: null,
       },

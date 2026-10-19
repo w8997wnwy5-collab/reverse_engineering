@@ -87,11 +87,15 @@ export default defineConfig({
     ],
     search: { provider: "local" },
     socialLinks: [
-      { icon: "github", link: "https://github.com/morluto/rea" },
+      {
+        icon: "github",
+        link: "https://github.com/w8997wnwy5-collab/reverse_engineering",
+      },
       { icon: "discord", link: "https://discord.gg/GkcryMnJDM" },
     ],
     editLink: {
-      pattern: "https://github.com/morluto/rea/edit/main/docs/:path",
+      pattern:
+        "https://github.com/w8997wnwy5-collab/reverse_engineering/edit/main/docs/:path",
     },
     footer: {
       message: "Released under the MIT License.",

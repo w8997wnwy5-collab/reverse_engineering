@@ -48,14 +48,14 @@ git submodule update --init third_party/binwalk third_party/unblob
 ```
 
 Normal REA builds and npm packages do not include or build these sources or
-engine binaries. See [upstream provenance](https://github.com/morluto/rea/blob/main/third_party/README.md).
+engine binaries. See [upstream provenance](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/third_party/README.md).
 
 ## CLI and MCP
 
 ```sh
-rea inspect-firmware-regions /path/to/firmware.bin
-rea extract-firmware /path/to/firmware.bin /path/to/new-output
-rea extract-firmware /path/to/firmware.bin /path/to/selected-output \
+re-tool inspect-firmware-regions /path/to/firmware.bin
+re-tool extract-firmware /path/to/firmware.bin /path/to/new-output
+re-tool extract-firmware /path/to/firmware.bin /path/to/selected-output \
   --offset 64 --length 4096 --max-depth 3
 ```
 

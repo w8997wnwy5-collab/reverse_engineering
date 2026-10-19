@@ -199,9 +199,9 @@ try {
   assert.equal(error.code, "invalid_request");
   assert.ok(JSON.stringify(error).includes(`Ghidra image base: ${base}`));
   for (const command of [
-    "rea search <path> . --kind procedures --mode regex",
-    "rea analyze <path>",
-    "rea inspect-native-load-image <path>",
+    "re-tool search <path> . --kind procedures --mode regex",
+    "re-tool analyze <path>",
+    "re-tool inspect-native-load-image <path>",
   ])
     assert.ok(JSON.stringify(error).includes(command));
   const cliProcedures = parseEvidence(

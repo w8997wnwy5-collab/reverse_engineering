@@ -87,7 +87,7 @@ describe("Trae JSON registration", () => {
     return { home, client };
   };
 
-  it("upserts rea into mcpServers while preserving unrelated settings", async () => {
+  it("upserts re-tool into mcpServers while preserving unrelated settings", async () => {
     const { home, client } = await traeClient();
     await writeFile(
       client.configPath,
@@ -103,7 +103,7 @@ describe("Trae JSON registration", () => {
     ).toBe("configured");
     const parsed = JSON.parse(await readFile(client.configPath, "utf8"));
     expect(parsed.mcpServers.other).toEqual({ command: "other-server" });
-    expect(parsed.mcpServers.rea).toEqual({
+    expect(parsed.mcpServers["re-tool"]).toEqual({
       command: command[0],
       args: command.slice(1),
     });
@@ -132,7 +132,7 @@ describe("Trae JSON registration", () => {
     ).toBe("configured");
     const parsed = JSON.parse(await readFile(client.configPath, "utf8"));
     expect(parsed.unrelated).toEqual({ setting: true });
-    expect(parsed.mcpServers.rea).toEqual({
+    expect(parsed.mcpServers["re-tool"]).toEqual({
       command: command[0],
       args: command.slice(1),
     });
@@ -145,13 +145,13 @@ describe("Trae JSON registration", () => {
       (await configureClientConfiguration(client, {}, command)).status,
     ).toBe("configured");
     const parsed = JSON.parse(await readFile(client.configPath, "utf8"));
-    expect(parsed.mcpServers.rea).toEqual({
+    expect(parsed.mcpServers["re-tool"]).toEqual({
       command: command[0],
       args: command.slice(1),
     });
   });
 
-  it("removes only the rea entry on uninstall", async () => {
+  it("removes only the re-tool entry on uninstall", async () => {
     const { home, client } = await traeClient();
     await writeFile(
       client.configPath,
@@ -168,6 +168,6 @@ describe("Trae JSON registration", () => {
     );
     const parsed = JSON.parse(await readFile(client.configPath, "utf8"));
     expect(parsed.mcpServers.other).toEqual({ command: "other-server" });
-    expect(parsed.mcpServers.rea).toBeUndefined();
+    expect(parsed.mcpServers["re-tool"]).toBeUndefined();
   });
 });

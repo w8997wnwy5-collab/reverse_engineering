@@ -63,17 +63,17 @@ and DLLs.
 ## Configuration
 
 ```powershell
-npm install --global rea-agents
+npm install --global re-tool
 $env:GHIDRA_INSTALL_DIR = "C:\tools\ghidra_12.1.4_PUBLIC"
 $env:JAVA_HOME = "C:\tools\jdk-21"
 $env:REA_ANALYSIS_PROVIDER = "ghidra"
 
-rea doctor --json
-rea providers --json
-rea inspect "C:\fixtures\sample.exe" --provider ghidra --format json
+re-tool doctor --json
+re-tool providers --json
+re-tool inspect "C:\fixtures\sample.exe" --provider ghidra --format json
 ```
 
-`rea doctor` distinguishes installation prerequisites from native artifact or
+`re-tool doctor` distinguishes installation prerequisites from native artifact or
 OS failures. It checks the Ghidra release, headless launcher, full JDK, x64
 host, and native controls. A missing or mismatched addon requires the matching
 Windows x64 package; changing MCP registration cannot supply that artifact.
@@ -94,7 +94,7 @@ failures remain stable for the process lifetime.
 Other doctor checks, including unconfigured agent integrations, can remain
 unready while Ghidra itself is available.
 
-`rea setup` can register supported agent integrations and the bundled skill.
+`re-tool setup` can register supported agent integrations and the bundled skill.
 Its existing preview and approval apply to configuration writes. Setup
 preserves valid Ghidra and Java settings even when a separate runtime
 prerequisite is unavailable.
@@ -104,7 +104,7 @@ For MCP, register the resolved Node entry point and the same provider settings:
 ```json
 {
   "mcpServers": {
-    "rea": {
+    "re-tool": {
       "command": "C:\\tools\\node\\node.exe",
       "args": ["C:\\tools\\rea\\scripts\\rea.mjs", "mcp"],
       "env": {
@@ -235,7 +235,7 @@ private runtime files; crash-time transactional deletion is not claimed.
 
 ## Verification
 
-See [native controls](https://github.com/morluto/rea/blob/main/native/windows/README.md) for the separate artifact
+See [native controls](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/native/windows/README.md) for the separate artifact
 build lane and native boundary checks. Development tarballs without the built
 artifact report native controls unavailable; publishing requires the verified
 artifact and manifest.

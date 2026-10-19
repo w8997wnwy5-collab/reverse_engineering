@@ -4,7 +4,7 @@ Read this guide only for an observed connection, command, approval or provider
 blocker. Keep the user's target and question in view. Explain what prevented the
 operation and the next useful step; after repair, continue the investigation.
 
-Commands below use an installed `rea`. If none is available, use the package
+Commands below use an installed `re-tool`. If none is available, use the package
 invocation in `SKILL.md` when acquiring REA is authorized. Follow the connected
 server's schemas and the installed CLI's help rather than assuming repository
 main and an older release expose the same arguments.
@@ -13,12 +13,12 @@ main and an older release expose the same arguments.
 
 | Observation                                                     | Meaning and next step                                                                                                                                                                                                                                                                                                 |
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| No REA tools in the active session                              | Inspect registration with `rea doctor --client codex --json`. A skill installation alone does not register MCP.                                                                                                                                                                                                       |
+| No REA tools in the active session                              | Inspect registration with `re-tool doctor --client codex --json`. A skill installation alone does not register MCP.                                                                                                                                                                                                   |
 | Missing, malformed or stale registration                        | Prepare a scoped setup plan; apply only authorized changes with backups.                                                                                                                                                                                                                                              |
 | Aligned registration, but no connected tools                    | Restart/reconnect the client. Doctor checks registration; it cannot establish the current agent's connection. Inspect the client's launch error if reconnection fails.                                                                                                                                                |
 | `MCP tool call requires approval, but approval policy is never` | Codex rejected the call before REA executed it. Do not install an engine or repeat setup to solve this client-policy decision. See the approval section below.                                                                                                                                                        |
 | REA returns `provider_unavailable` or an unavailable tool entry | Read that operation's provider diagnostics or `binary_session.result.tool_availability`. Expand each group's tool names and inherit the shared client requirements unless overridden. Use the operation's availability, reason, and remediation; a complete tool catalog does not imply every operation is available. |
-| `rea` is missing in a child shell, or Node is incompatible      | Inspect the actual shell PATH and launcher/runtime. A prefix installation may be absent from a login shell's PATH; this does not establish a broken MCP registration.                                                                                                                                                 |
+| `re-tool` is missing in a child shell, or Node is incompatible  | Inspect the actual shell PATH and launcher/runtime. A prefix installation may be absent from a login shell's PATH; this does not establish a broken MCP registration.                                                                                                                                                 |
 
 If the client cannot launch its shell/sandbox helper or read the installed skill,
 inspect its launch diagnostic. For example, Codex can refuse helper aliases when
@@ -39,8 +39,8 @@ as such; only actual REA output supplies REA Evidence.
 For Codex:
 
 ```bash
-rea doctor --client codex --json
-rea setup --client codex --dry-run --json
+re-tool doctor --client codex --json
+re-tool setup --client codex --dry-run --json
 ```
 
 Use the current supported client's ID: `claude_code`, `claude_desktop`, `codex`,
@@ -52,7 +52,7 @@ For unsupported clients, use version-pinned manual stdio registration or CLI.
 
 Show the plan's exact paths, backups, changes and bundled-skill replacement.
 Obtain approval for writes when that concrete scope is not already authorized,
-then apply the same scope with `rea setup --client codex --yes`. Add
+then apply the same scope with `re-tool setup --client codex --yes`. Add
 `--install-hopper` only when separately needed and explicitly approved. Do not
 install or upgrade unrelated prerequisites. Restart/reconnect, verify tools
 actually appear, and resume the original task. If they remain absent, inspect
@@ -78,10 +78,10 @@ disposable Codex profile, current Codex supports per-tool configuration. For
 example, opening and closing an analysis session can be scoped independently:
 
 ```toml
-[mcp_servers.rea.tools.open_binary]
+[mcp_servers.re-tool.tools.open_binary]
 approval_mode = "approve"
 
-[mcp_servers.rea.tools.close_binary]
+[mcp_servers.re-tool.tools.close_binary]
 approval_mode = "approve"
 ```
 
@@ -98,24 +98,24 @@ choice, not a prerequisite for every REA task.
 Check the command environment only if the launcher fails:
 
 ```bash
-command -v rea
+command -v re-tool
 command -v node
 node --version
-rea --version
+re-tool --version
 ```
 
 Use the public launcher at its known installation path with a supported existing
 Node on PATH when the child shell loses a prefix installation. Avoid internal
 `dist/cli.js` entrypoints or global toolchain changes. MCP may have its own valid
-launcher even when a shell cannot resolve `rea`.
+launcher even when a shell cannot resolve `re-tool`.
 
 For a user-supplied JavaScript tree or ASAR, select output files in the authorized
 workspace and save complete Evidence before reading a view:
 
 ```bash
-rea analyze-javascript-application /absolute/path/to/app --json > app-evidence.json
+re-tool analyze-javascript-application /absolute/path/to/app --json > app-evidence.json
 jq -c '{source: {kind: "inline", evidence: .}, view: {kind: "summary"}}' app-evidence.json > app-view.json
-rea inspect-analysis-view app-view.json
+re-tool inspect-analysis-view app-view.json
 ```
 
 These commands do not register MCP or install an analysis engine. CLI JavaScript

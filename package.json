@@ -1,16 +1,16 @@
 {
-  "name": "rea-agents",
-  "mcpName": "io.github.morluto/rea",
+  "name": "re-tool",
+  "mcpName": "io.github.w8997wnwy5-collab/reverse_engineering",
   "version": "6.7.0",
-  "description": "Reverse engineer anything from your terminal or agent with one CLI and MCP server.",
+  "description": "RE-Tool: personal reverse-engineering CLI and MCP server for agents, based on REA by morluto.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/morluto/rea.git"
+    "url": "git+https://github.com/w8997wnwy5-collab/reverse_engineering.git"
   },
-  "homepage": "https://github.com/morluto/rea#readme",
+  "homepage": "https://github.com/w8997wnwy5-collab/reverse_engineering#readme",
   "bugs": {
-    "url": "https://github.com/morluto/rea/issues"
+    "url": "https://github.com/w8997wnwy5-collab/reverse_engineering/issues"
   },
   "keywords": [
     "reverse-engineering",
@@ -21,7 +21,7 @@
     "mcp-server",
     "model-context-protocol",
     "static-analysis",
-    "rea",
+    "re-tool",
     "decompiler",
     "mcp",
     "hopper",
@@ -39,8 +39,7 @@
     "#web-bundle-analysis-worker": "./dist/composition/webBundleAnalysisWorkerProcess.js"
   },
   "bin": {
-    "rea": "scripts/rea.mjs",
-    "rea-agents": "scripts/rea.mjs"
+    "re-tool": "scripts/rea.mjs"
   },
   "engines": {
     "node": "^22.19.0 || ^24.11.0 || >=26.0.0"

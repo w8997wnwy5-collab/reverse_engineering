@@ -430,7 +430,7 @@ const parseBareKey = (
 
 /**
  * Parse a table header. Quoted segments stay one key, so `mcp_servers."rea.env"`
- * is not the dotted path `mcp_servers.rea.env`.
+ * is not the dotted path `mcp_servers.re-tool.env`.
  */
 const parseTomlTableHeader = (line: string): TomlTableHeader | undefined => {
   let index = skipHorizontalSpace(line, 0);
@@ -750,7 +750,7 @@ const hasSeparatorComma = (trivia: string): boolean =>
 
 /**
  * Replace or remove `serverKey` inside one `{ ... }` table. A closed inline
- * table cannot later grow a `[mcp_servers.rea]` header.
+ * table cannot later grow a `[mcp_servers.re-tool]` header.
  */
 const editInlineServerTable = (
   table: string,
@@ -1654,7 +1654,7 @@ export const clientRegistrationEntry = (
   command: readonly string[],
   environment: Readonly<Record<string, string>>,
 ): Record<string, unknown> => {
-  const [executable = "rea", ...args] = command;
+  const [executable = PRODUCT_IDENTITY.cliBinary, ...args] = command;
   switch (format) {
     case "opencode":
       return {

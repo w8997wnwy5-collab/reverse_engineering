@@ -232,13 +232,13 @@ describe("interactive setup journey", () => {
           ...actions[0],
           operation: "update",
           backupPath: "/isolated/.codex/config.toml.bak",
-          commands: ["npx -y rea-agents@3.2.1 mcp"],
+          commands: ["npx -y re-tool@3.2.1 mcp"],
         },
         actions[1],
       ],
     );
     expect(result.output).toContain("/isolated/.codex/config.toml.bak");
-    expect(result.output).toContain("command: npx -y rea-agents@3.2.1 mcp");
+    expect(result.output).toContain("command: npx -y re-tool@3.2.1 mcp");
     expect(result.output.indexOf("command:")).toBeLessThan(
       result.output.indexOf("Apply these 2 changes?"),
     );
@@ -322,16 +322,16 @@ describe("interactive setup journey", () => {
 
 describe("interactive setup completion", () => {
   it.each([
-    { npmCommand: "", userAgent: "", launcher: "rea" },
+    { npmCommand: "", userAgent: "", launcher: "re-tool" },
     {
       npmCommand: "exec",
       userAgent: "npm/10.9.0 node/v24.11.0 linux x64",
-      launcher: "npx rea-agents",
+      launcher: "npx re-tool",
     },
     {
       npmCommand: "exec",
       userAgent: "bun/1.4.2 npm/? node/v26.3.0 linux x64",
-      launcher: "bunx rea-agents",
+      launcher: "bunx re-tool",
     },
   ])(
     "prints an available next command for $launcher invocation",

@@ -26,9 +26,9 @@ cliTest(
     const second = join(directory, "opencode.jsonc");
     const original = JSON.stringify({
       mcp: {
-        rea: {
+        "re-tool": {
           type: "local",
-          command: ["npx", "-y", "rea-agents@6.7.0", "mcp"],
+          command: ["npx", "-y", "re-tool@6.7.0", "mcp"],
         },
       },
       unrelated: "keep",
@@ -314,8 +314,8 @@ for (const group of groups) {
           await writeFile(
             config,
             original.replace(
-              "[mcp_servers.rea]",
-              "[mcp_servers.rea]\ndisabled = true",
+              "[mcp_servers.re-tool]",
+              "[mcp_servers.re-tool]\ndisabled = true",
             ),
           );
           expect(

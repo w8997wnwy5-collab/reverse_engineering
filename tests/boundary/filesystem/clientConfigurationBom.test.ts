@@ -42,7 +42,7 @@ describe.each(["vscode", "copilot_cli", "opencode", "commandcode"])(
         ).replaceAll("\n", "\r\n")}\r\n`;
         await mkdir(dirname(client.configPath), { recursive: true });
         await writeFile(client.configPath, original);
-        const currentCommandPath = join(home, "rea");
+        const currentCommandPath = join(home, "re-tool");
         const command = [currentCommandPath, "mcp"];
         expect(await inspectClientConfiguration(client, {}, command)).toEqual({
           status: "update",
@@ -67,7 +67,7 @@ describe.each(["vscode", "copilot_cli", "opencode", "commandcode"])(
           label: "left\uFEFFright",
           [serversKey]: {
             other: { command: "other" },
-            rea: clientRegistrationEntry(client.format, command, {}),
+            "re-tool": clientRegistrationEntry(client.format, command, {}),
           },
           theme: "dark",
         });
@@ -105,7 +105,7 @@ describe.each(["vscode", "copilot_cli", "opencode", "commandcode"])(
   },
 );
 
-it.each(['\uFEFF{"servers": {"rea": @}}', '\uFEFF{"setting":\uFEFFtrue}'])(
+it.each(['\uFEFF{"servers": {"re-tool": @}}', '\uFEFF{"setting":\uFEFFtrue}'])(
   "rejects malformed BOM placement without mutation: %j",
   async (original) => {
     const home = await createTestTempDirectory(
@@ -120,10 +120,10 @@ it.each(['\uFEFF{"servers": {"rea": @}}', '\uFEFF{"setting":\uFEFFtrue}'])(
     );
 
     expect(
-      await inspectClientConfiguration(client, {}, ["rea", "mcp"]),
+      await inspectClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toMatchObject({ status: "invalid" });
     expect(
-      await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+      await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
     ).toEqual({ status: "failed", reason: "readback" });
     expect(await readFile(configPath)).toEqual(Buffer.from(original));
     expect(await readdir(home)).toEqual(["mcp.json"]);
@@ -145,7 +145,7 @@ it("preserves BOM-prefixed JSONC values and comments through update and removal"
 
   if (CURRENT_ENTRYPOINT_PATH === undefined)
     throw new Error("test runner entrypoint is unavailable");
-  const firstCommand = ["rea", "mcp"];
+  const firstCommand = ["re-tool", "mcp"];
   const updatedCommand = [process.execPath, CURRENT_ENTRYPOINT_PATH, "mcp"];
   expect(
     await configureClientConfiguration(client, {}, firstCommand),
@@ -156,7 +156,7 @@ it("preserves BOM-prefixed JSONC values and comments through update and removal"
   const updated = await readFile(client.configPath, "utf8");
   expect(parseClientConfiguration(updated, client.format).servers).toEqual({
     other: { command: "other\uFEFFtool" },
-    rea: clientRegistrationEntry(client.format, updatedCommand, {}),
+    "re-tool": clientRegistrationEntry(client.format, updatedCommand, {}),
   });
 
   expect(await systemUninstallHost(home).removeClient(client)).toMatchObject({
@@ -187,7 +187,7 @@ it.each(["", "\n  \n", "\uFEFF"])(
       throw new Error("missing Antigravity JSON config");
     await mkdir(dirname(client.configPath), { recursive: true });
     await writeFile(client.configPath, original);
-    const command = [join(home, "rea"), "mcp"];
+    const command = [join(home, "re-tool"), "mcp"];
 
     expect(await inspectClientConfiguration(client, {}, command)).toEqual({
       status: "update",
@@ -198,7 +198,9 @@ it.each(["", "\n  \n", "\uFEFF"])(
       backupPath: `${client.configPath}.rea.backup`,
     });
     expect(JSON.parse(await readFile(client.configPath, "utf8"))).toEqual({
-      mcpServers: { rea: clientRegistrationEntry(client.format, command, {}) },
+      mcpServers: {
+        "re-tool": clientRegistrationEntry(client.format, command, {}),
+      },
     });
     expect(await inspectClientConfiguration(client, {}, command)).toEqual({
       status: "already_current",

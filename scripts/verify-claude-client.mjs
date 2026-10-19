@@ -122,7 +122,7 @@ const fixture = await createAnthropicModelFixture({
         "Claude must expose REA tools or its native pending-server wait",
       );
       pendingServerWaits++;
-      return call(wait.name, { servers: ["rea"] });
+      return call(wait.name, { servers: ["re-tool"] });
     }
     const prefix = analysis.name.slice(
       0,
@@ -348,8 +348,8 @@ try {
           allow: [
             "Skill",
             "WaitForMcpServers",
-            "mcp__rea__analyze_javascript_application",
-            ...(mode === "call" ? ["mcp__rea__binary_session"] : []),
+            "mcp__re-tool__analyze_javascript_application",
+            ...(mode === "call" ? ["mcp__re-tool__binary_session"] : []),
           ],
         },
       }),

@@ -148,8 +148,8 @@ test.each(["unavailable", "unknown"] as const)(
       });
       expect(check?.remediation).toContain(
         state === "unavailable"
-          ? "rea setup --install-hopper"
-          : "Retry rea doctor",
+          ? "re-tool setup --install-hopper"
+          : "Retry re-tool doctor",
       );
     } finally {
       python.mockRestore();

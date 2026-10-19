@@ -1,6 +1,6 @@
 # Kuna provider
 
-[Kuna](https://github.com/Noelo-Lab/kuna) is an Apache-2.0 decompiler distributed as one `kuna` executable. REA uses a `kuna` you supply. It does not download, install, update or bundle Kuna. REA verified this provider with Kuna 1.833; it accepts other releases and reports them as unverified in `rea doctor` and in each analysis profile.
+[Kuna](https://github.com/Noelo-Lab/kuna) is an Apache-2.0 decompiler distributed as one `kuna` executable. REA uses a `kuna` you supply. It does not download, install, update or bundle Kuna. REA verified this provider with Kuna 1.833; it accepts other releases and reports them as unverified in `re-tool doctor` and in each analysis profile.
 
 Kuna is static: it reads the selected image and never executes it.
 
@@ -8,7 +8,7 @@ Kuna is static: it reads the selected image and never executes it.
 
 ```bash
 export REA_KUNA_COMMAND=/absolute/path/to/kuna
-rea doctor --provider kuna
+re-tool doctor --provider kuna
 ```
 
 Select it explicitly with `--provider kuna`, MCP's `open_binary.provider_id: "kuna"`, or `REA_ANALYSIS_PROVIDER=kuna`. With Kuna and another provider configured for the same target, `auto` reports `ambiguous` instead of choosing one.
@@ -117,7 +117,7 @@ REA writes Kuna's exports only inside `REA_KUNA_CACHE_DIR`:
 - `trash/` holds retired builds and evicted exports awaiting removal.
 - `home/` is Kuna's HOME.
 
-Builds publish by one rename, so a reader sees a complete export or none. A session keeps the export it uses from eviction only within its own REA process. If another REA process sharing the cache evicts it, the session rebuilds it; meanwhile pseudocode falls back to single-function runs. A damaged or edited export is removed and rebuilt. Staging moves to `trash/` for removal only after REA proves its Kuna process stopped. Staging of a process it cannot prove stopped is never swept; REA keeps it owned, retries the stop on `close_binary`, and reports it until the stop is proven. Failed file removal also stays bound to its export and is retried by `close_binary`; closing does not report success while that cleanup remains. `rea doctor --provider kuna` reports the cache directory without creating it.
+Builds publish by one rename, so a reader sees a complete export or none. A session keeps the export it uses from eviction only within its own REA process. If another REA process sharing the cache evicts it, the session rebuilds it; meanwhile pseudocode falls back to single-function runs. A damaged or edited export is removed and rebuilt. Staging moves to `trash/` for removal only after REA proves its Kuna process stopped. Staging of a process it cannot prove stopped is never swept; REA keeps it owned, retries the stop on `close_binary`, and reports it until the stop is proven. Failed file removal also stays bound to its export and is retried by `close_binary`; closing does not report success while that cleanup remains. `re-tool doctor --provider kuna` reports the cache directory without creating it.
 
 ## Verify with a real Kuna
 

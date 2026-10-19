@@ -128,7 +128,7 @@ cliTest(
 - insert:
     - id: rea-mcp
       name: '@deepseek-ai/dsh-mcp-client'
-      config: {serverName: rea, transport: stdio, command: stale, args: [mcp]}
+      config: {serverName: re-tool, transport: stdio, command: stale, args: [mcp]}
 - holder: &op
     insert:
       - id: unrelated
@@ -138,7 +138,7 @@ cliTest(
       - id: rea-mcp
         name: '@deepseek-ai/dsh-mcp-client'
         config:
-          serverName: rea
+          serverName: re-tool
           transport: stdio
           command: stale
           args: [mcp]
@@ -345,7 +345,7 @@ cliTest.for([
       name: caller-plugin
     - id: rea-mcp
       name: '@deepseek-ai/dsh-mcp-client'
-      config: {serverName: rea, transport: stdio, command: stale, args: [mcp]}
+      config: {serverName: re-tool, transport: stdio, command: stale, args: [mcp]}
 `,
     remediation: "group with unknown activity",
     removal: "removed",

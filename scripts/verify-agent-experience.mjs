@@ -505,7 +505,7 @@ async function runCodex(prompt, approvedTools) {
     'approval_policy="never"',
     ...approvedTools.flatMap((name) => [
       "-c",
-      `mcp_servers.rea.tools.${name}.approval_mode="approve"`,
+      `mcp_servers.re-tool.tools.${name}.approval_mode="approve"`,
     ]),
     ...(optionalModel === undefined ? [] : ["--model", optionalModel]),
     prompt,

@@ -46,7 +46,7 @@ already-installed Chrome-family browser and the URL with your running fixture:
 ```
 
 ```bash
-rea capture-browser-scenario ./browser-scenario.json --json > browser-capture.json
+re-tool capture-browser-scenario ./browser-scenario.json --json > browser-capture.json
 ```
 
 The default capture includes the final URL. Select DOM, screenshots, or events
@@ -100,7 +100,7 @@ Save it as `browser-search.json` and run it the same way as the minimal
 example:
 
 ```bash
-rea capture-browser-scenario ./browser-search.json --json > browser-search-capture.json
+re-tool capture-browser-scenario ./browser-search.json --json > browser-search-capture.json
 ```
 
 Through MCP, pass the same object as the `capture_browser_scenario` arguments.

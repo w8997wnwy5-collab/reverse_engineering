@@ -145,7 +145,7 @@ for (const scenario of [
 
       if (scenario.name === "an explicitly untrusted workspace") {
         const excluded = Buffer.from(
-          JSON.stringify({ mcp: { excluded: ["rea"] } }),
+          JSON.stringify({ mcp: { excluded: ["re-tool"] } }),
         );
         await writeFile(fixture.workspace, excluded);
         const excludedSetup = await fixture.run(setupArguments);
@@ -179,7 +179,7 @@ cliTest(
         diagnostic: "Invalid JSON/JSONC",
       },
       {
-        text: JSON.stringify({ mcp: { excluded: ["rea"] } }),
+        text: JSON.stringify({ mcp: { excluded: ["re-tool"] } }),
         state: "stale",
         diagnostic: "mcp.excluded",
       },

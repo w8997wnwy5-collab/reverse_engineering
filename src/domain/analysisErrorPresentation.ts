@@ -97,14 +97,14 @@ export const analysisErrorRemediationAction = (
   if (error instanceof HopperRemoteError)
     return error.diagnosticType === "invalid_request"
       ? "Correct the reported address, document, or arguments and retry."
-      : "Review the Hopper diagnostic details and correct the request or target; run `rea doctor` if the provider itself is failing. Repeating the unchanged request is not expected to succeed.";
+      : "Review the Hopper diagnostic details and correct the request or target; run `re-tool doctor` if the provider itself is failing. Repeating the unchanged request is not expected to succeed.";
   if (error instanceof EvidenceReferenceError)
     return "Use an exact Evidence reference retained by this session, supply the complete inline Evidence, re-run its producer, or import its Evidence bundle. close_binary clears retained records.";
   if (
     error instanceof BinaryTargetError &&
     error.constraint === "directory_requires_file"
   )
-    return "For a JavaScript/Electron application directory, call analyze_javascript_application with input_path or run `rea analyze <directory>`. For binary analysis, select its executable file.";
+    return "For a JavaScript/Electron application directory, call analyze_javascript_application with input_path or run `re-tool analyze <directory>`. For binary analysis, select its executable file.";
   if (
     error instanceof BinaryTargetError &&
     error.constraint === "load_selection_rejected"
@@ -119,7 +119,7 @@ export const analysisErrorRemediationAction = (
     error instanceof BinaryTargetError &&
     error.constraint === "wasm_requires_static_inspection"
   )
-    return `For static inspection, call inspect_wasm_artifact with ${JSON.stringify({ path: error.path })} or run \`rea inspect-wasm-artifact <path> --format json\`. This separate lane requires caller-supplied WABT 1.0.42 via absolute REA_WABT_BIN_DIRECTORY; check its availability in binary_session. REA does not execute WASM or install tools, and the header alone does not establish that the complete module is valid.`;
+    return `For static inspection, call inspect_wasm_artifact with ${JSON.stringify({ path: error.path })} or run \`re-tool inspect-wasm-artifact <path> --format json\`. This separate lane requires caller-supplied WABT 1.0.42 via absolute REA_WABT_BIN_DIRECTORY; check its availability in binary_session. REA does not execute WASM or install tools, and the header alone does not establish that the complete module is valid.`;
   if (
     error instanceof AnalysisAccessDeniedError ||
     (error instanceof BinaryTargetError && error.systemCode !== undefined)
@@ -275,7 +275,7 @@ export const analysisErrorUserMessage = (error: AnalysisError): string => {
     return "Evidence state changed before the update completed. Refresh the current state and try again.";
   if (error instanceof ConfigurationError)
     return error.settings.length === 0
-      ? "REA configuration is invalid. Run `rea doctor` and fix the reported setting."
+      ? "REA configuration is invalid. Run `re-tool doctor` and fix the reported setting."
       : `REA configuration is invalid: ${error.settings
           .map(({ setting, constraint }) =>
             constraint.includes(setting)
@@ -291,7 +291,7 @@ export const analysisErrorUserMessage = (error: AnalysisError): string => {
     return `${error.message}. Static WebAssembly inspection uses a separate optional WABT lane, not a native analysis engine.`;
   if (error instanceof BinaryTargetError)
     return error.constraint === "directory_requires_file"
-      ? "open_binary accepts files and macOS app bundles. This target is a directory; JavaScript/Electron application directories can be analyzed directly with analyze_javascript_application or `rea analyze <directory>`."
+      ? "open_binary accepts files and macOS app bundles. This target is a directory; JavaScript/Electron application directories can be analyzed directly with analyze_javascript_application or `re-tool analyze <directory>`."
       : error.constraint === "file_format_rejected" ||
           error.constraint === "load_selection_rejected"
         ? `${error.message}.`
@@ -299,9 +299,9 @@ export const analysisErrorUserMessage = (error: AnalysisError): string => {
   if (error._tag === "ProcessCaptureError")
     return (
       error.userMessage ??
-      "Process capture could not complete. Run `rea doctor`, then review capture policy and try again."
+      "Process capture could not complete. Run `re-tool doctor`, then review capture policy and try again."
     );
-  return "Analysis could not complete. Run `rea doctor`, then try again.";
+  return "Analysis could not complete. Run `re-tool doctor`, then try again.";
 };
 
 const hopperErrorUserMessage = (error: AnalysisError): string | undefined => {
@@ -369,17 +369,17 @@ const hopperProcessMessage = (error: HopperProcessError): string => {
 
 const standardErrorMessage = (tag: AnalysisErrorTag): string | undefined => {
   if (UNREADABLE_OUTPUT_TAGS.has(tag))
-    return "Analysis returned an unreadable result. Run `rea doctor` and review the reported details; repeating the unchanged request is not expected to succeed.";
+    return "Analysis returned an unreadable result. Run `re-tool doctor` and review the reported details; repeating the unchanged request is not expected to succeed.";
   if (UNSUPPORTED_PROVIDER_TAGS.has(tag))
     return "This analysis is unavailable for the current target. Choose another analysis or target.";
   if (CANCELLED_TAGS.has(tag))
     return "Analysis was cancelled. Start it again when ready.";
   if (TIMEOUT_TAGS.has(tag))
-    return "Analysis took too long. Try a smaller request, then run `rea doctor` if it continues.";
+    return "Analysis took too long. Try a smaller request, then run `re-tool doctor` if it continues.";
   if (ADAPTER_FAILURE_TAGS.has(tag))
-    return "Analysis could not complete. Run `rea doctor` and review the reported details; repeating the unchanged request is not expected to succeed.";
+    return "Analysis could not complete. Run `re-tool doctor` and review the reported details; repeating the unchanged request is not expected to succeed.";
   if (START_FAILURE_TAGS.has(tag))
-    return "Analysis could not start or stopped unexpectedly. Run `rea doctor`, then try again.";
+    return "Analysis could not start or stopped unexpectedly. Run `re-tool doctor`, then try again.";
   return undefined;
 };
 

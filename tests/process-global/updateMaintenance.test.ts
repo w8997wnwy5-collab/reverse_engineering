@@ -70,7 +70,7 @@ const writeSkill = async (content: string): Promise<string> => {
 };
 
 const staleCodex =
-  '[mcp_servers.rea]\ncommand = "npx"\nargs = ["-y", "rea-agents@0.1.0", "mcp"]\n';
+  '[mcp_servers.re-tool]\ncommand = "npx"\nargs = ["-y", "re-tool@0.1.0", "mcp"]\n';
 const action = {
   id: "configure_client:codex",
   kind: "configure_client",
@@ -80,7 +80,7 @@ const action = {
   external: false,
   operation: "update",
   backupPath: "/test/.codex/config.toml.rea.backup",
-  commands: ["rea mcp"],
+  commands: ["re-tool mcp"],
 };
 
 describe("OMP integration maintenance", () => {
@@ -88,7 +88,9 @@ describe("OMP integration maintenance", () => {
     const entry = { type: "stdio", command: entryPoint, args: ["mcp"] };
     await writeClient(
       "omp",
-      JSON.stringify({ mcpServers: { rea: { ...entry, enabled: false } } }),
+      JSON.stringify({
+        mcpServers: { "re-tool": { ...entry, enabled: false } },
+      }),
     );
     await expect(
       existingMaintenanceScope(home, entryPoint, process.env),
@@ -96,8 +98,8 @@ describe("OMP integration maintenance", () => {
     await writeClient(
       "omp",
       JSON.stringify({
-        mcpServers: { rea: { ...entry, enabled: false } },
-        enabledServers: ["rea"],
+        mcpServers: { "re-tool": { ...entry, enabled: false } },
+        enabledServers: ["re-tool"],
       }),
     );
     await expect(
@@ -108,16 +110,16 @@ describe("OMP integration maintenance", () => {
   it("preserves Grok Build disabled_mcp_servers during maintenance planning", async () => {
     // Strict identity: a user-disabled integration must never be selected
     // for maintenance, even with a healthy owned entry underneath.
-    const registration = `[mcp_servers.rea]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entryPoint)}, "mcp"]\nstartup_timeout_sec = 30\n`;
+    const registration = `[mcp_servers.re-tool]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entryPoint)}, "mcp"]\nstartup_timeout_sec = 30\n`;
     const configPath = await writeClient(
       "grok_build",
-      `disabled_mcp_servers = ["rea", "other"]\n${registration}`,
+      `disabled_mcp_servers = ["re-tool", "other"]\n${registration}`,
     );
     await expect(
       existingMaintenanceScope(home, entryPoint, process.env),
     ).resolves.toMatchObject({ clients: [] });
     expect(await readFile(configPath, "utf8")).toContain(
-      'disabled_mcp_servers = ["rea", "other"]',
+      'disabled_mcp_servers = ["re-tool", "other"]',
     );
     await writeFile(
       configPath,
@@ -136,7 +138,7 @@ describe("maintenance activation and layered configuration", () => {
       JSON.stringify({
         mcp: {
           servers: {
-            rea: { command: entryPoint, args: ["mcp"], enable: false },
+            "re-tool": { command: entryPoint, args: ["mcp"], enable: false },
           },
         },
       }),
@@ -155,7 +157,7 @@ describe("maintenance activation and layered configuration", () => {
     await writeFile(
       fallbackPath,
       JSON.stringify({
-        mcpServers: { rea: { command: entryPoint, args: ["mcp"] } },
+        mcpServers: { "re-tool": { command: entryPoint, args: ["mcp"] } },
       }),
     );
 
@@ -170,7 +172,7 @@ describe("maintenance activation and layered configuration", () => {
     await writeFile(
       join(directory, "opencode.json"),
       JSON.stringify({
-        mcp: { rea: { type: "local", command: [entryPoint, "mcp"] } },
+        mcp: { "re-tool": { type: "local", command: [entryPoint, "mcp"] } },
       }),
     );
     await writeClient("opencode", JSON.stringify({ theme: "user-selected" }));
@@ -186,16 +188,18 @@ describe("existing REA integration maintenance", () => {
     await writeClient("claude_code", '{"mcpServers":{}}');
     await writeClient(
       "cursor",
-      '{"mcpServers":{"rea":{"command":"foreign-server","args":[]}}}',
+      '{"mcpServers":{"re-tool":{"command":"foreign-server","args":[]}}}',
     );
     await writeClient(
       "opencode",
-      '{"mcp":{"rea":{"type":"local","command":["npx","-y","rea-agents@0.1.0","mcp"],"enabled":false}}}',
+      '{"mcp":{"re-tool":{"type":"local","command":["npx","-y","re-tool@0.1.0","mcp"],"enabled":false}}}',
     );
     await writeClient(
       "vscode",
       JSON.stringify({
-        servers: { rea: { type: "stdio", command: entryPoint, args: ["mcp"] } },
+        servers: {
+          "re-tool": { type: "stdio", command: entryPoint, args: ["mcp"] },
+        },
       }),
     );
     await expect(
@@ -462,7 +466,7 @@ const createBunUpdateFixture = async (
   await mkdir(join(packageRoot, "scripts"), { recursive: true });
   await writeFile(
     join(globalDirectory, "package.json"),
-    '{"dependencies":{"rea-agents":"3.2.1"}}\n',
+    '{"dependencies":{"re-tool":"3.2.1"}}\n',
   );
   await writeFile(versionPath, "3.2.1");
   await writeFile(
@@ -572,7 +576,7 @@ describe("Bun global installation update", () => {
           currentVersion: "3.2.1",
           latestVersion: null,
           reason: "version-check",
-          remediation: `REA updates for Bun global installations require Bun 1.2.17 or later; bun --version returned ${JSON.stringify(bunVersion)}. Upgrade Bun manually, then rerun rea update.`,
+          remediation: `REA updates for Bun global installations require Bun 1.2.17 or later; bun --version returned ${JSON.stringify(bunVersion)}. Upgrade Bun manually, then rerun re-tool update.`,
         });
         expect(invocations).toEqual([versionInvocation]);
         expect(await readFile(versionPath, "utf8")).toBe("3.2.1");

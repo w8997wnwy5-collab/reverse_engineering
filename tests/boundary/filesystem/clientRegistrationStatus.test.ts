@@ -22,7 +22,7 @@ describe("client registration status", () => {
       join(home, ".claude.json"),
       JSON.stringify({
         mcpServers: {
-          rea: {
+          "re-tool": {
             command: "npx",
             args: ["-y", PRODUCT_IDENTITY.registrationPackageSpecifier, "mcp"],
           },
@@ -56,13 +56,17 @@ describe("client registration status", () => {
     ]);
     await writeFile(
       join(home, ".codex/config.toml"),
-      `[mcp_servers.rea]\ncommand = "npx"\nargs = ["-y", "${PRODUCT_IDENTITY.registrationPackageSpecifier}", "mcp"]\nstartup_timeout_sec = 30\ntool_timeout_sec = 450\n`,
+      `[mcp_servers.re-tool]\ncommand = "npx"\nargs = ["-y", "${PRODUCT_IDENTITY.registrationPackageSpecifier}", "mcp"]\nstartup_timeout_sec = 30\ntool_timeout_sec = 450\n`,
     );
     await writeFile(
       join(home, ".cursor/mcp.json"),
       JSON.stringify({
         mcpServers: {
-          rea: { command: foreignEntry, args: ["mcp"], env: { SECRET: "x" } },
+          "re-tool": {
+            command: foreignEntry,
+            args: ["mcp"],
+            env: { SECRET: "x" },
+          },
         },
       }),
     );
@@ -125,7 +129,7 @@ describe("client registration launcher identity", () => {
     await mkdir(join(home, ".codex"));
     await writeFile(
       join(home, ".codex/config.toml"),
-      '[mcp_servers.rea]\ncommand = "npx"\nargs = ["-y", "rea-agents", "mcp"]\n',
+      '[mcp_servers.re-tool]\ncommand = "npx"\nargs = ["-y", "re-tool", "mcp"]\n',
     );
 
     const statuses = await readClientRegistrationStatuses(home);
@@ -133,7 +137,7 @@ describe("client registration launcher identity", () => {
     expect(statuses).toEqual([
       expect.objectContaining({
         client: "codex",
-        command: ["npx", "-y", "rea-agents", "mcp"],
+        command: ["npx", "-y", "re-tool", "mcp"],
         state: "stale",
       }),
     ]);
@@ -145,7 +149,7 @@ describe("client registration launcher identity", () => {
       join(home, ".claude.json"),
       JSON.stringify({
         mcpServers: {
-          rea: { command: "bunx", args: ["rea-agents", "mcp"] },
+          "re-tool": { command: "bunx", args: ["re-tool", "mcp"] },
         },
       }),
     );
@@ -154,7 +158,7 @@ describe("client registration launcher identity", () => {
 
     expect(status).toMatchObject({
       client: "claude_code",
-      command: ["bunx", "rea-agents", "mcp"],
+      command: ["bunx", "re-tool", "mcp"],
       state: "stale",
     });
   });
@@ -166,7 +170,7 @@ describe("client registration launcher identity", () => {
     await writeFile(
       join(home, ".cursor/mcp.json"),
       JSON.stringify({
-        mcpServers: { rea: { command: command[0], args: [command[1]] } },
+        mcpServers: { "re-tool": { command: command[0], args: [command[1]] } },
       }),
     );
 
@@ -190,7 +194,7 @@ describe("client registration launcher identity", () => {
       executable = process.execPath,
     ) => ({
       mcpServers: {
-        rea: { command: executable, args: [scriptPath, "mcp"] },
+        "re-tool": { command: executable, args: [scriptPath, "mcp"] },
       },
     });
     await writeFile(configPath, JSON.stringify(registration("./rea.mjs")));
@@ -234,10 +238,10 @@ describe("client registration launcher identity", () => {
       "rea-registration-version-drift-",
     );
     await mkdir(join(home, ".codex"));
-    const command = ["npx", "-y", "rea-agents@4.1.0", "mcp"];
+    const command = ["npx", "-y", "re-tool@4.1.0", "mcp"];
     await writeFile(
       join(home, ".codex/config.toml"),
-      `[mcp_servers.rea]\ncommand = "${command[0]}"\nargs = ["${command[1]}", "${command[2]}", "${command[3]}"]\n`,
+      `[mcp_servers.re-tool]\ncommand = "${command[0]}"\nargs = ["${command[1]}", "${command[2]}", "${command[3]}"]\n`,
     );
 
     const [status] = await readClientRegistrationStatuses(home);
@@ -245,14 +249,14 @@ describe("client registration launcher identity", () => {
     expect(status).toMatchObject({
       client: "codex",
       command,
-      package_reference: "rea-agents@4.1.0",
+      package_reference: "re-tool@4.1.0",
       state: "stale",
       remediation: expect.stringContaining(
         `current REA CLI package is ${PRODUCT_IDENTITY.packageVersion}`,
       ),
     });
     expect(status?.remediation).toContain("does not resolve package-runner");
-    expect(status?.remediation).toContain("rea setup --client codex");
+    expect(status?.remediation).toContain("re-tool setup --client codex");
   });
 });
 
@@ -264,7 +268,7 @@ describe("commandcode registration status", () => {
     await mkdir(join(home, ".commandcode"));
     await writeFile(
       join(home, ".commandcode/mcp.json"),
-      JSON.stringify({ mcpServers: { rea: registration } }),
+      JSON.stringify({ mcpServers: { "re-tool": registration } }),
     );
   };
 
@@ -321,7 +325,7 @@ describe("Node-wrapped registration policy", () => {
       const entry = resolve("scripts/rea.mjs");
       await writeFile(
         join(home, ".codex/config.toml"),
-        `[mcp_servers.rea]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = ${String(timeout)}\ntool_timeout_sec = 450\n`,
+        `[mcp_servers.re-tool]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = ${String(timeout)}\ntool_timeout_sec = 450\n`,
       );
       const statuses = await readClientRegistrationStatuses(home, entry, {
         environment: {},
@@ -341,7 +345,7 @@ describe("Node-wrapped registration policy", () => {
     const entry = resolve("scripts/rea.mjs");
     await writeFile(
       join(home, ".codex/config.toml"),
-      `[mcp_servers.rea]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = 5\ntool_timeout_sec = 10\n`,
+      `[mcp_servers.re-tool]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = 5\ntool_timeout_sec = 10\n`,
     );
     const [status] = await readClientRegistrationStatuses(home, entry, {
       environment: {},
@@ -361,7 +365,7 @@ describe("Node-wrapped registration policy", () => {
       const entry = resolve("scripts/rea.mjs");
       await writeFile(
         join(home, ".grok/config.toml"),
-        `[mcp_servers.rea]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = ${String(timeout)}\n`,
+        `[mcp_servers.re-tool]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = ${String(timeout)}\n`,
       );
       const statuses = await readClientRegistrationStatuses(home, entry, {
         environment: {},
@@ -375,13 +379,13 @@ describe("Node-wrapped registration policy", () => {
     },
   );
 
-  it("reports Grok Build stale when rea is listed in disabled_mcp_servers", async () => {
+  it("reports Grok Build stale when re-tool is listed in disabled_mcp_servers", async () => {
     const home = await createTestTempDirectory("rea-grok-disabled-status-");
     await mkdir(join(home, ".grok"));
     const entry = resolve("scripts/rea.mjs");
     await writeFile(
       join(home, ".grok/config.toml"),
-      `disabled_mcp_servers = ["rea"]\n[mcp_servers.rea]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = 30\n`,
+      `disabled_mcp_servers = ["re-tool"]\n[mcp_servers.re-tool]\ncommand = ${JSON.stringify(process.execPath)}\nargs = [${JSON.stringify(entry)}, "mcp"]\nstartup_timeout_sec = 30\n`,
     );
     expect(
       await readClientRegistrationStatuses(home, entry, { environment: {} }),
@@ -395,7 +399,7 @@ describe("Node-wrapped registration policy", () => {
     await mkdir(join(home, ".codex"));
     await writeFile(
       join(home, ".codex/config.toml"),
-      '[mcp_servers.rea]\ncommand = "/current/rea"\nargs = ["mcp"]\nstartup_timeout_sec = 1\n',
+      '[mcp_servers.re-tool]\ncommand = "/current/rea"\nargs = ["mcp"]\nstartup_timeout_sec = 1\n',
     );
     const statuses = await readClientRegistrationStatuses(
       home,
@@ -419,7 +423,7 @@ describe("Node-wrapped registration policy", () => {
         join(home, ".copilot/mcp-config.json"),
         JSON.stringify({
           mcpServers: {
-            rea: {
+            "re-tool": {
               type: "stdio",
               command: process.execPath,
               args: [entry, "mcp"],
@@ -453,7 +457,7 @@ it.skipIf(process.platform === "win32" || process.getuid?.() === 0)(
     await writeFile(
       target,
       JSON.stringify({
-        mcpServers: { rea: { command: "rea", args: ["mcp"] } },
+        mcpServers: { "re-tool": { command: "re-tool", args: ["mcp"] } },
       }),
     );
     const path = join(home, ".claude.json");

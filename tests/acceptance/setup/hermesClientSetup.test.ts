@@ -40,7 +40,7 @@ for (const [version, keyStyle] of [
         "timestamp: 2026-10-14T00:00:00.123456+08:00\n";
       const original =
         settings +
-        "mcp_servers:\n  rea:\n    command: rea-old\n    args: [mcp]\n    env:\n" +
+        "mcp_servers:\n  re-tool:\n    command: rea-old\n    args: [mcp]\n    env:\n" +
         Object.entries(environment)
           .map(
             ([key, value]) =>
@@ -67,7 +67,7 @@ for (const [version, keyStyle] of [
       expect((await run(setup)).json).toMatchObject({ status: "ready" });
       const configured = await readFile(config, "utf8");
       expect(parse(configured, { version })).toMatchObject({
-        mcp_servers: { rea: { env: environment, enabled: true } },
+        mcp_servers: { "re-tool": { env: environment, enabled: true } },
       });
       // Hermes's C loader applies YAML 1.1 even with the explicit directive.
       // Independently model that schema; real Hermes loader verification is
@@ -84,7 +84,7 @@ for (const [version, keyStyle] of [
         expect(
           parse(configured.slice(directive.length), { version: "1.1" }),
         ).toMatchObject({
-          mcp_servers: { rea: { env: environment, enabled: true } },
+          mcp_servers: { "re-tool": { env: environment, enabled: true } },
         });
       }
       expect(configured.startsWith(settings)).toBe(true);
@@ -158,7 +158,7 @@ cliTest(
       model: "custom",
       mcp_servers: {
         other: { command: "other-server" },
-        rea: { enabled: true },
+        "re-tool": { enabled: true },
       },
     });
     expect(await readFile(config + ".rea.backup", "utf8")).toBe(original);
@@ -259,7 +259,7 @@ for (const selection of ["default", "custom", "suffix", "explicit"] as const) {
       ).toBe(0);
       expect(parse(await readFile(config, "utf8"))).toMatchObject({
         mcp_servers: {
-          rea: { enabled: true },
+          "re-tool": { enabled: true },
           other: { command: "other-server" },
         },
       });
@@ -437,7 +437,7 @@ cliTest.skipIf(process.platform === "win32")(
       model: "custom",
       mcp_servers: {
         other: { command: "other-server" },
-        rea: { enabled: true },
+        "re-tool": { enabled: true },
       },
     });
     expect(await readFile(`${config}.rea.backup`, "utf8")).toBe(original);

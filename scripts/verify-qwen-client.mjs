@@ -331,7 +331,7 @@ const args = [
   "--approval-mode",
   mode === "chat" ? "default" : "yolo",
   "--allowed-mcp-server-names",
-  "rea",
+  "re-tool",
   "--output-format",
   "stream-json",
   "--max-session-turns",
@@ -357,11 +357,11 @@ try {
     .find((v) => v.type === "system" && v.subtype === "init");
   assert(initialized);
   const observed = initialized.tools
-    .filter((n) => n.startsWith("mcp__rea__"))
+    .filter((n) => n.startsWith("mcp__re-tool__"))
     .sort();
   assert.deepEqual(
     observed,
-    TOOL_CONTRACTS.map((c) => `mcp__rea__${c.name}`).sort(),
+    TOOL_CONTRACTS.map((c) => `mcp__re-tool__${c.name}`).sort(),
     "Qwen must discover the complete REA catalog",
   );
   assert.equal(fixture.failure, undefined);

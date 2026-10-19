@@ -364,7 +364,7 @@ try {
     });
     await writeFile(join(lab, `${name}.stdout`), result.stdout);
     await writeFile(join(lab, `${name}.stderr`), result.stderr);
-    if (name === "mcp-list") assert(result.stdout.includes("rea"));
+    if (name === "mcp-list") assert(result.stdout.includes("re-tool"));
     if (name === "skill-list")
       assert(result.stdout.includes("reverse-engineer-anything"));
   }
@@ -381,7 +381,7 @@ try {
       model,
       "--allow-tool=skill",
       "--allow-tool=read",
-      "--allow-tool=rea(analyze_javascript_application)",
+      "--allow-tool=re-tool(analyze_javascript_application)",
       "--add-dir",
       target,
       "--prompt",

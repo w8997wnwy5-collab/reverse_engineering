@@ -5,7 +5,7 @@ REA integrates native Chrome DevTools Protocol inspection and precise V8 coverag
 ## Observe execution
 
 ```bash
-rea observe-web-execution http://127.0.0.1:9222 TARGET_ID \
+re-tool observe-web-execution http://127.0.0.1:9222 TARGET_ID \
   --observation-ms 10000 --json
 ```
 
@@ -41,7 +41,7 @@ Observed script metadata remains available when ownership is unknown; source tex
 ## Inspect a node's listeners
 
 ```bash
-rea inspect-web-event-listeners http://127.0.0.1:9222 TARGET_ID '#submit' --json
+re-tool inspect-web-event-listeners http://127.0.0.1:9222 TARGET_ID '#submit' --json
 ```
 
 MCP: `inspect_web_event_listeners` with the same scope and an explicit CSS `selector`. Native DOM selection inspects the first matching node in the main document. A missing match is an explicit empty result.

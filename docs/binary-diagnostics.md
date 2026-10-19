@@ -14,7 +14,7 @@ contains unchanged pwntools 4.15.0, pyelftools 0.33 and Unicorn 2.1.2:
 
 ```sh
 REA_PWNTOOLS_PYTHON=/absolute/isolated-env/bin/python \
-  rea inspect-binary-layout ./selected.elf --json
+  re-tool inspect-binary-layout ./selected.elf --json
 ```
 
 ```json
@@ -27,7 +27,7 @@ REA_PWNTOOLS_PYTHON=/absolute/isolated-env/bin/python \
 REA never installs Python, packages or GDB, changes a user init file, launches
 the selected object as a host process, or requests runtime library resolution. The Python process
 uses isolated mode and an owned cache. Exact upstream profiles are recorded in
-[upstream provenance](https://github.com/morluto/rea/blob/main/third_party/pwntools/README.md).
+[upstream provenance](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/third_party/pwntools/README.md).
 
 ## Interpreting results
 
@@ -176,7 +176,7 @@ the session until release succeeds.
 PE32+ file without an active target, native engine, Python, or Windows SDK:
 
 ```sh
-rea inspect-pe-resources ./selected.exe --json
+re-tool inspect-pe-resources ./selected.exe --json
 ```
 
 ```json

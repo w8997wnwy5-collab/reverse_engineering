@@ -17,7 +17,7 @@ launcher can find. Select the launcher through the environment:
 export REA_APKTOOL_COMMAND=/absolute/path/apktool
 ```
 
-Readiness is `rea inspect-apktool-client`: it runs `apktool --version` and
+Readiness is `re-tool inspect-apktool-client`: it runs `apktool --version` and
 reports the resolved launcher, its selection source, and its version. A
 missing launcher reports `capability_unavailable` with the
 `REA_APKTOOL_COMMAND` remediation rather than attempting an installation.
@@ -59,12 +59,12 @@ reports `capability_unavailable`.
 ## Answer an analyst question
 
 ```sh
-rea inspect-apktool-client
-rea decode-android-resources /targets/Example.apk
-rea decode-android-resources /targets/Example.apk --locale de
-rea decode-android-resources /targets/Example.apk --locales de --locales pt-BR
-rea decode-android-resources /targets/Example.apk --locales de --locales pt-BR --string-tables-only
-rea decode-android-resources /targets/Example.apk --no-strings
+re-tool inspect-apktool-client
+re-tool decode-android-resources /targets/Example.apk
+re-tool decode-android-resources /targets/Example.apk --locale de
+re-tool decode-android-resources /targets/Example.apk --locales de --locales pt-BR
+re-tool decode-android-resources /targets/Example.apk --locales de --locales pt-BR --string-tables-only
+re-tool decode-android-resources /targets/Example.apk --no-strings
 ```
 
 Equivalent MCP methods are `inspect_apktool_client` and

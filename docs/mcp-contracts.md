@@ -139,7 +139,7 @@ keeps the original residual question text. Explicit `record_unknown` requests
 keep caller-selected identity and reject duplicate creation.
 
 For a portable exported bundle, the CLI shares this projection:
-`rea inspect-evidence-bundle '{"path":"/tmp/evidence.json","detail":"summary","filters":{"operation":"analyze_function"}}' --format json`.
+`re-tool inspect-evidence-bundle '{"path":"/tmp/evidence.json","detail":"summary","filters":{"operation":"analyze_function"}}' --format json`.
 The CLI validates and materializes that local bundle under its existing memory
 budget; summary delivery does not make arbitrary large files cheap to import.
 
@@ -347,7 +347,7 @@ parent for another invocation.
 ## Identity and discovery
 
 `binary_session` reports the active package, server, SDK, and negotiated
-protocol details. `rea doctor` separately inspects supported JSON/TOML client
+protocol details. `re-tool doctor` separately inspects supported JSON/TOML client
 registrations, reports their command vectors as aligned, stale, missing, or
 invalid, and keeps live-server state `unknown` unless the active connection
 supplies identity.
@@ -733,7 +733,7 @@ coverage partial when any mismatch is continued. Contradicted nested ASARs
 remain opaque.
 
 `extract_artifact` accepts the same policy in MCP and as `--integrity-policy`
-on `rea extract-artifact`. With `record-and-continue` it writes the observed
+on `re-tool extract-artifact`. With `record-and-continue` it writes the observed
 bytes and returns the `integrity_contradictions` records for the extracted
 files. An active ASAR unpacked entry whose companion file is absent cannot be
 materialized; extraction fails as `unavailable` with that logical path.

@@ -373,7 +373,7 @@ try {
       "--approval-mode",
       mode === "chat" ? "default" : "yolo",
       "--allowed-mcp-server-names",
-      "rea",
+      "re-tool",
       "--output-format",
       "stream-json",
       "-p",

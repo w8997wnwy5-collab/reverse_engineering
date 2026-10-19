@@ -298,7 +298,7 @@ describe("setup workflow action selection", () => {
     ]);
   });
 
-  it("does not default to a foreign command registered under the rea key", async () => {
+  it("does not default to a foreign command registered under the re-tool key", async () => {
     const host = new FakeSetupHost();
     host.hopper = "/Applications/Hopper";
     host.skill = "unchanged";

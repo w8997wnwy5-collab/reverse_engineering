@@ -14,13 +14,13 @@ notes; it does not authorize merging, tagging, or publishing.
 
 Fetch complete history and tags. Select the published baseline tag from
 `.release-please-manifest.json` on the release PR's **base branch**, and pin that
-branch's exact SHA as the editorial target. REA tags are `rea-agents-VERSION`.
+branch's exact SHA as the editorial target. REA tags are `re-tool-VERSION`.
 Use the proposed version, including its prerelease suffix; do not change the
 `always-bump-minor` strategy to imitate OpenClaw's calendar versions.
 
 ```bash
 node scripts/release-notes.mjs inventory \
-  --repository morluto/rea --base rea-agents-PREVIOUS \
+  --repository w8997wnwy5-collab/reverse_engineering --base re-tool-PREVIOUS \
   --target FULL_BASE_BRANCH_SHA --version VERSION \
   --manifest /tmp/rea-VERSION.contributions.json
 node scripts/release-notes.mjs record \

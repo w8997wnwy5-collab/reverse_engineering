@@ -26,9 +26,9 @@ project the graph; CLI and MCP use the same workflow and return
 artifact-bound Evidence inline:
 
 ```sh
-rea inspect-artifact /path/to/Example.hap --format json > inspection.json
+re-tool inspect-artifact /path/to/Example.hap --format json > inspection.json
 node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.stringify({ inventory_evidence: [JSON.parse(readFileSync("inspection.json", "utf8"))] }));' > projection-input.json
-rea project-harmony-application-graph projection-input.json --format json
+re-tool project-harmony-application-graph projection-input.json --format json
 ```
 
 The MCP tool `project_harmony_application_graph` takes the same

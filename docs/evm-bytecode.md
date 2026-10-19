@@ -6,8 +6,8 @@ contract investigation, compatibility, audit and CTF showcases use the same
 portable primitive. It does not require an active native binary target.
 
 ```sh
-rea inspect-evm-interface ./runtime.hex hex --json
-rea inspect-evm-interface ./runtime.bin raw --json
+re-tool inspect-evm-interface ./runtime.hex hex --json
+re-tool inspect-evm-interface ./runtime.bin raw --json
 ```
 
 ```json
@@ -24,7 +24,7 @@ their distinct unavailable-provider or capability classification.
 The host must already provide util-linux `prlimit`, normally `/usr/bin/prlimit`;
 `REA_EVM_PRLIMIT_COMMAND` can select another absolute executable. REA installs
 no system tools and changes no user configuration. [Upstream provenance and
-license](https://github.com/morluto/rea/blob/main/third_party/evmole/README.md) are packaged.
+license](https://github.com/w8997wnwy5-collab/reverse_engineering/blob/main/third_party/evmole/README.md) are packaged.
 
 ## Evidence semantics
 

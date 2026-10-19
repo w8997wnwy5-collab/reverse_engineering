@@ -66,9 +66,9 @@ await writeFile(
   'export function result() { return { clientCompatibility: "REA_CLIENT_FIXTURE", count: 7 }; }\n',
 );
 const expectedDevices = TOOL_CONTRACTS.map(
-  (tool) => "mcp__rea_" + tool.name,
+  (tool) => "mcp__re-tool_" + tool.name,
 ).sort();
-const analysisDevice = "xd://mcp__rea_analyze_javascript_application";
+const analysisDevice = "xd://mcp__re-tool_analyze_javascript_application";
 let clientVersion;
 let expectedSkillBody;
 let skillLoaded = false;
@@ -133,7 +133,9 @@ const fixture = await createOpenAiModelFixture({
         i: "Inspect REA native tool contract",
         path: analysisDevice,
       });
-    assert(containsText(replies, "# mcp__rea_analyze_javascript_application"));
+    assert(
+      containsText(replies, "# mcp__re-tool_analyze_javascript_application"),
+    );
     assert(
       containsText(replies, "input_path") &&
         containsText(replies, '"directory"'),
@@ -194,7 +196,7 @@ const fixture = await createOpenAiModelFixture({
 const original = JSON.stringify(
   {
     mcpServers: { other: { command: "unrelated-server", enabled: false } },
-    disabledServers: ["rea", "other"],
+    disabledServers: ["re-tool", "other"],
   },
   null,
   2,
@@ -368,7 +370,7 @@ try {
     .flatMap((event) =>
       event.message.slice("xd://: mounted ".length).split(", "),
     )
-    .filter((name) => name.startsWith("mcp__rea_"));
+    .filter((name) => name.startsWith("mcp__re-tool_"));
   assert.deepEqual(
     mounted.sort(),
     expectedDevices,

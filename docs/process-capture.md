@@ -57,7 +57,7 @@ For a small first capture, save this as `scenario.json`:
 Run the scenario through the CLI:
 
 ```sh
-rea capture-process ./scenario.json --json > capture.json
+re-tool capture-process ./scenario.json --json > capture.json
 ```
 
 `--json` is required when saving input for JSON consumers; the default terminal
@@ -74,7 +74,7 @@ limits, normalization, filesystem coverage, and incomplete observations.
 Compare saved capture Evidence with:
 
 ```sh
-rea compare-process-captures authority.json reconstruction.json
+re-tool compare-process-captures authority.json reconstruction.json
 ```
 
 The comparison checks terminal, interaction, exit, filesystem, and
@@ -105,7 +105,7 @@ difference.
 
 Select the producer's report directory and give `file_bytes` enough room for
 the complete files you need, including other files in those roots. For example,
-save this scenario and run `rea capture-process ./scenario.json --json > capture.json`:
+save this scenario and run `re-tool capture-process ./scenario.json --json > capture.json`:
 
 ```json
 {
@@ -528,7 +528,7 @@ export SDKROOT="$(xcrun --show-sdk-path)"
 export REA_DARWIN_MODULE_CACHE_PATH="$PWD/rea-cache/modules"
 export TMPDIR="$PWD/rea-cache/tmp"
 mkdir -p "$TMPDIR"
-rea analyze-javascript-application ./fixture --artifact-format directory
+re-tool analyze-javascript-application ./fixture --artifact-format directory
 ```
 
 Keep the selected compiler and SDK paired. Permit REA's evidence/output paths

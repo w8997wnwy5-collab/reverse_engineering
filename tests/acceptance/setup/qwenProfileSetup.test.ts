@@ -53,7 +53,7 @@ cliTest(
       model: { name: "existing" },
       mcpServers: {
         other: { command: "other-server" },
-        rea: {
+        "re-tool": {
           command:
             process.platform === "win32"
               ? process.execPath

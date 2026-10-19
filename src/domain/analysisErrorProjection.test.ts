@@ -774,7 +774,9 @@ describe("analysis error projection: operational diagnostics", () => {
         exit_code: 7,
       },
     });
-    expect(exited.message).not.toContain("Run `rea doctor`, then try again.");
+    expect(exited.message).not.toContain(
+      "Run `re-tool doctor`, then try again.",
+    );
     expect(exited.remediation.action).toContain("Restart the owned provider");
 
     const unknown = projectAnalysisError(

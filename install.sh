@@ -9,8 +9,8 @@
 # after `main` would run the installer without the caller's flags.
 set -euo pipefail
 
-PACKAGE="rea-agents"
-REPOSITORY="morluto/rea"
+PACKAGE="re-tool"
+REPOSITORY="w8997wnwy5-collab/reverse_engineering"
 numeric_identifier='(0|[1-9][0-9]*)'
 prerelease_identifier="(${numeric_identifier}|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)"
 build_identifier='[0-9A-Za-z-]+'
@@ -70,9 +70,9 @@ usage() {
   cat <<'EOF'
 Usage: install.sh [--version VERSION] [--dry-run] [--no-setup] [--no-prompt] [--verbose]
 
-Installs the REA CLI, then starts `rea setup` interactively to configure Hopper
+Installs the REA CLI, then starts `re-tool setup` interactively to configure Hopper
 and agents when a terminal is available. Pass --no-setup (or --no-prompt) to
-skip setup and run `rea setup` later.
+skip setup and run `re-tool setup` later.
 EOF
 }
 
@@ -128,7 +128,7 @@ main() {
   else
     release_json="$(curl -fsSL --proto '=https' --tlsv1.2 --retry 3 -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/$REPOSITORY/releases/latest")" || fail "the latest REA release could not be resolved. Check network access or pass --version VERSION, then retry."
     tag="$(printf '%s' "$release_json" | node -e 'let s="";process.stdin.on("data",c=>s+=c).on("end",()=>{const v=JSON.parse(s).tag_name;if(typeof v!=="string")process.exit(1);process.stdout.write(v)})' 2>/dev/null)" || fail "the release response was invalid. Retry later or pass --version VERSION."
-    matches "$tag" "^rea-agents-(${version_pattern})$" || fail "the latest release tag was invalid. Retry later or pass --version VERSION."
+    matches "$tag" "^re-tool-(${version_pattern})$" || fail "the latest release tag was invalid. Retry later or pass --version VERSION."
     version="${BASH_REMATCH[1]}"
   fi
 

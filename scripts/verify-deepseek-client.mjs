@@ -147,9 +147,9 @@ const fixture = await createOpenAiModelFixture({
       ++mainRequests <= 4,
       "Harness did not complete the bounded fixture workflow.",
     );
-    const rea = tools.filter((tool) => tool.name.startsWith("mcp__rea__"));
+    const rea = tools.filter((tool) => tool.name.startsWith("mcp__re-tool__"));
     const observedCatalog = rea
-      .map((tool) => tool.name.slice("mcp__rea__".length))
+      .map((tool) => tool.name.slice("mcp__re-tool__".length))
       .sort();
     assert.deepEqual(
       observedCatalog,
@@ -241,7 +241,7 @@ const fixture = await createOpenAiModelFixture({
       skillLoaded,
       "Harness must load the installed skill before analysis.",
     );
-    return call("mcp__rea__analyze_javascript_application", {
+    return call("mcp__re-tool__analyze_javascript_application", {
       input_path: target,
       format: "directory",
     });
@@ -274,7 +274,7 @@ try {
     - id: rea-mcp
       name: '@deepseek-ai/dsh-mcp-client'
       config:
-        serverName: rea
+        serverName: re-tool
         transport: stdio
         command: stale-launcher
         args: [mcp]

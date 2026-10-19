@@ -48,7 +48,7 @@ const CODEX_ORIGINAL = [
 const verifyMcpAdd = async ({ cli, environment, npxLog }) => {
   await run(cli, ["mcp", "add"], environment);
   const mcpRegistration = await readFile(npxLog, "utf8");
-  const expected = `add-mcp npx -y ${PRODUCT_IDENTITY.registrationPackageSpecifier} mcp --name rea`;
+  const expected = `add-mcp npx -y ${PRODUCT_IDENTITY.registrationPackageSpecifier} mcp --name re-tool`;
   if (!mcpRegistration.includes(expected))
     throw new Error("Incur mcp add did not register the pinned npx command");
 };
@@ -142,7 +142,7 @@ const verifyInteractiveSetup = async ({
       ) {
         finish(
           new Error(
-            `packaged rea-agents setup did not cancel with a restored terminal and exit 0: ${output}`,
+            `packaged re-tool setup did not cancel with a restored terminal and exit 0: ${output}`,
           ),
         );
         return;
@@ -331,8 +331,9 @@ const verifyAbsentClaudeCodeSetup = async ({ cli, environment, home }) => {
     firstExecution.status !== 0 ||
     first.status !== "ready" ||
     !first.appliedActions.includes("configured_claude_code") ||
-    config.mcpServers?.rea?.command !== cli ||
-    JSON.stringify(config.mcpServers?.rea?.args) !== JSON.stringify(["mcp"]) ||
+    config.mcpServers?.["re-tool"]?.command !== cli ||
+    JSON.stringify(config.mcpServers?.["re-tool"]?.args) !==
+      JSON.stringify(["mcp"]) ||
     (await pathExists(markerPath)) ||
     registration?.state !== "aligned" ||
     registration.config_path !== configPath
@@ -424,8 +425,9 @@ export const assertClientConfig = async (cli, configPath, original) => {
   const config = json(await readFile(configPath, "utf8"));
   if (
     config.existing !== true ||
-    config.mcpServers?.rea?.command !== cli ||
-    JSON.stringify(config.mcpServers?.rea?.args) !== JSON.stringify(["mcp"])
+    config.mcpServers?.["re-tool"]?.command !== cli ||
+    JSON.stringify(config.mcpServers?.["re-tool"]?.args) !==
+      JSON.stringify(["mcp"])
   )
     throw new Error("packaged client readback failed");
   if (!(await readFile(`${configPath}.rea.backup`)).equals(original))
@@ -467,7 +469,7 @@ const assertCodexSymlink = async ({
   if (
     !(await lstat(codexConfig)).isSymbolicLink() ||
     !(await lstat(cursorConfig)).isSymbolicLink() ||
-    !codex.includes("[mcp_servers.rea]") ||
+    !codex.includes("[mcp_servers.re-tool]") ||
     !codex.includes(`command = "${cli}"`) ||
     !codex.includes("startup_timeout_sec = 30") ||
     !codex.startsWith(CODEX_ORIGINAL) ||
@@ -601,7 +603,8 @@ const verifySetupFailureRecovery = async ({
   if (
     recovered.status !== status ||
     recoveredExecution.status !== (status === "ready" ? 0 : 1) ||
-    json(await readFile(cursorConfig, "utf8")).mcpServers?.rea?.command !== cli
+    json(await readFile(cursorConfig, "utf8")).mcpServers?.["re-tool"]
+      ?.command !== cli
   )
     throw new Error("packaged setup did not recover");
 };

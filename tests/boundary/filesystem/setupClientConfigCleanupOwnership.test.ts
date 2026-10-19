@@ -147,7 +147,7 @@ it("stops uninstall and retains the backup read owner when its close fails", asy
   const client = { name: "cursor", format: "json", configPath: path } as const;
   await writeFile(path, '{"keep":"before setup"}\n');
   expect(
-    await configureClientConfiguration(client, {}, ["rea", "mcp"]),
+    await configureClientConfiguration(client, {}, ["re-tool", "mcp"]),
   ).toMatchObject({ status: "configured" });
   const configured = await readFile(path, "utf8");
   const { closeAttempts, release } = holdReadHandle(
@@ -195,8 +195,8 @@ describe("ZCode fallback cleanup ownership", () => {
       try {
         const action =
           operation === "preflight"
-            ? host.inspectClientConfiguration?.(client, {}, ["rea", "mcp"])
-            : host.configureClient(client, {}, ["rea", "mcp"]);
+            ? host.inspectClientConfiguration?.(client, {}, ["re-tool", "mcp"])
+            : host.configureClient(client, {}, ["re-tool", "mcp"]);
         if (action === undefined) throw new Error("setup preflight missing");
         await expect(action).rejects.toMatchObject({
           _tag: "ConfigurationError",
@@ -240,14 +240,14 @@ describe("setup client configuration cleanup ownership", () => {
           host,
           [client],
           {},
-          ["rea", "mcp"],
+          ["re-tool", "mcp"],
         )
           .then((detectedClients) =>
             configureDetectedClients({
               host,
               detectedClients,
               providerEnvironment: {},
-              command: ["rea", "mcp"],
+              command: ["re-tool", "mcp"],
               clients: {},
               appliedActions: [],
             }),
@@ -316,7 +316,7 @@ describe("setup client configuration cleanup ownership", () => {
     let hostCloseFinished = false;
     let alignment: Promise<boolean> | undefined;
     try {
-      alignment = host.clientNeedsConfigure(client, {}, ["rea", "mcp"]);
+      alignment = host.clientNeedsConfigure(client, {}, ["re-tool", "mcp"]);
       await readStarted;
 
       const close = host.close;
@@ -327,7 +327,7 @@ describe("setup client configuration cleanup ownership", () => {
       });
 
       const lateAdmission = await host
-        .clientNeedsConfigure(client, {}, ["rea", "mcp"])
+        .clientNeedsConfigure(client, {}, ["re-tool", "mcp"])
         .then(
           () => undefined,
           (cause: unknown) => cause,
@@ -402,7 +402,7 @@ it.each(
     );
     await mkdir(dirname(config), { recursive: true });
     const registration =
-      '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}\n';
+      '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}\n';
     await writeFile(config, registration);
     const heldPath = source === "policy" ? join(home, "system.json") : config;
     const heldText = source === "policy" ? "{}\n" : registration;
@@ -468,7 +468,7 @@ it("keeps a supplied registration scope responsible for diagnostics and cleanup 
   await mkdir(dirname(config), { recursive: true });
   await writeFile(
     config,
-    '{"mcpServers":{"rea":{"command":"rea","args":["mcp"]}}}',
+    '{"mcpServers":{"re-tool":{"command":"re-tool","args":["mcp"]}}}',
   );
   const held = holdReadHandle(config, "held scoped registration descriptor");
   const resources = new ArtifactResourceScope();

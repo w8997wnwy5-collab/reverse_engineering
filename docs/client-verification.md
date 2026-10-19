@@ -460,7 +460,7 @@ commands and skill reads even if MCP works. Each owned run directory is removed
 after verification unless fixture retention is requested. Cleanup attempts the
 remaining run tree even if auth removal fails, and reports unresolved cleanup
 together with the original verification failure. The lane
-installs the packaged skill and MCP registration through public `rea setup`,
+installs the packaged skill and MCP registration through public `re-tool setup`,
 rather than copying a skill into a project that also inherits the caller's
 skills and configuration. Only authentication is copied, when present, and it
 is removed even with `REA_AGENT_EVAL_KEEP_FIXTURES=true`. No user configuration,

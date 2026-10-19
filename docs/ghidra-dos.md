@@ -9,13 +9,13 @@ Ghidra 12.1.4 and JDK 21; no DOS emulator or cross-compiler is required.
 ## Open and inspect
 
 ```bash
-rea inspect /absolute/path/to/legacy.exe --provider ghidra --json
-rea search /absolute/path/to/legacy.exe entry --kind procedures --provider ghidra --json
-rea instructions /absolute/path/to/legacy.exe entry --provider ghidra --json
-rea function /absolute/path/to/legacy.exe entry --provider ghidra --json
-rea inspect-native-load-image /absolute/path/to/legacy.exe --provider ghidra --json
-rea read-bytes /absolute/path/to/legacy.exe 0x10000 --length 16 --provider ghidra --json
-rea address-to-file-offset /absolute/path/to/legacy.exe 0x10000 --provider ghidra --json
+re-tool inspect /absolute/path/to/legacy.exe --provider ghidra --json
+re-tool search /absolute/path/to/legacy.exe entry --kind procedures --provider ghidra --json
+re-tool instructions /absolute/path/to/legacy.exe entry --provider ghidra --json
+re-tool function /absolute/path/to/legacy.exe entry --provider ghidra --json
+re-tool inspect-native-load-image /absolute/path/to/legacy.exe --provider ghidra --json
+re-tool read-bytes /absolute/path/to/legacy.exe 0x10000 --length 16 --provider ghidra --json
+re-tool address-to-file-offset /absolute/path/to/legacy.exe 0x10000 --provider ghidra --json
 ```
 
 Use an observed procedure name or address from discovery when the target does
@@ -47,9 +47,9 @@ COM has no identifying header. Select its interpretation explicitly; neither the
 `.com` suffix nor arbitrary unrecognized bytes are enough to admit it.
 
 ```bash
-rea inspect /absolute/path/to/legacy.com --target-format dos-com --provider ghidra --json
-rea function /absolute/path/to/legacy.com 0x10100 --target-format dos-com --provider ghidra --json
-rea inspect-native-load-image /absolute/path/to/legacy.com --target-format dos-com --provider ghidra --json
+re-tool inspect /absolute/path/to/legacy.com --target-format dos-com --provider ghidra --json
+re-tool function /absolute/path/to/legacy.com 0x10100 --target-format dos-com --provider ghidra --json
+re-tool inspect-native-load-image /absolute/path/to/legacy.com --target-format dos-com --provider ghidra --json
 ```
 
 ```json
@@ -197,7 +197,7 @@ observations rather than asserting cross-process identity of raw p-code.
 ```
 
 ```bash
-rea annotate-native-function /local/program.com 0x10100 --target-format dos-com --provider ghidra --name entry --comment 'Recovered startup role' --json
+re-tool annotate-native-function /local/program.com 0x10100 --target-format dos-com --provider ghidra --name entry --comment 'Recovered startup role' --json
 ```
 
 The CLI returns the updated analysis before closing its isolated session. MCP edits remain visible to later reads until `close_binary`. Original bytes remain unchanged, database edits are discarded on close, and immutable analysis snapshots are invalidated after edits. This operation does not save a Ghidra project, change ABI/types/body ranges, patch instructions, or emulate a DOS runtime. Windows P0 does not admit it.

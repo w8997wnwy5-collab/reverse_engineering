@@ -1,11 +1,11 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.morluto/rea",
-  "title": "REA",
-  "description": "Reverse engineer anything from your terminal or agent with one CLI and MCP server.",
-  "websiteUrl": "https://github.com/morluto/rea",
+  "name": "io.github.w8997wnwy5-collab/reverse_engineering",
+  "title": "RE-Tool",
+  "description": "RE-Tool: personal reverse-engineering CLI and MCP server for agents, based on REA by morluto.",
+  "websiteUrl": "https://github.com/w8997wnwy5-collab/reverse_engineering",
   "repository": {
-    "url": "https://github.com/morluto/rea",
+    "url": "https://github.com/w8997wnwy5-collab/reverse_engineering",
     "source": "github"
   },
   "version": "6.7.0",
@@ -13,7 +13,7 @@
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "rea-agents",
+      "identifier": "re-tool",
       "version": "6.7.0",
       "runtimeHint": "npx",
       "transport": {

@@ -143,7 +143,7 @@ profiles](mcp-contracts.md#output-schemas).
 
 ## Kimi Code
 
-Setup registers `rea` in `~/.kimi-code/mcp.json`, or
+Setup registers `re-tool` in `~/.kimi-code/mcp.json`, or
 `$KIMI_CODE_HOME/mcp.json` when set, while preserving unrelated settings and
 creating a `.rea.backup` before updating an existing file. Kimi Code infers
 stdio from the `command` entry, so setup does not add a `type` field. New
@@ -162,7 +162,7 @@ explicit `REA_JADX_OPERATION_TIMEOUT_MS` is forwarded with the JADX
 registration but does not contribute to the derived tool timeout; raise
 `toolTimeoutMs` to cover a longer selected JADX deadline.
 This headroom is a practical default, not a guarantee for every analysis
-duration. Setup preserves positive timeout values already in the `rea` entry.
+duration. Setup preserves positive timeout values already in the `re-tool` entry.
 You can edit `startupTimeoutMs` and `toolTimeoutMs` there; doctor keeps positive
 caller-selected values aligned and reports a non-blocking advisory when a tool
 timeout is shorter than the known provider allowance.
@@ -172,9 +172,9 @@ selects `REA_MCP_INPUT_SCHEMA_PROFILE=full` or `compact`. This keeps REA's
 canonical tool validation unchanged while avoiding a Moonshot Kimi Code 2.2.0
 failure observed with the full catalog: its request was rejected because a
 single tool schema exceeded the provider's size limit. The limit is
-provider-specific and not an MCP protocol limit. `rea doctor --client kimi`
+provider-specific and not an MCP protocol limit. `re-tool doctor --client kimi`
 reports an older registration with no explicit profile as stale. To restore the
-compact profile, run `rea setup --client kimi` or add
+compact profile, run `re-tool setup --client kimi` or add
 `REA_MCP_INPUT_SCHEMA_PROFILE=compact` to the registration's `env`, then restart
 Kimi Code. An explicit `full` profile remains respected and can still exceed
 Moonshot's limit.
@@ -188,9 +188,9 @@ Start a new Kimi Code session to pick up MCP and skill changes.
 For [Pi](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md),
 setup writes a `type: "stdio"` entry under `mcpServers.rea` in the user-level
 `~/.pi/agent/mcp.json` and installs the bundled skill under `~/.agents/skills`.
-Use `rea setup --client pi --dry-run --json` to inspect the plan, then
-`rea setup --client pi --yes --json` to approve it. Check the registration with
-`rea doctor --client pi --json`. Pi reads `mcp.json` as strict JSON, like its
+Use `re-tool setup --client pi --dry-run --json` to inspect the plan, then
+`re-tool setup --client pi --yes --json` to approve it. Check the registration with
+`re-tool doctor --client pi --json`. Pi reads `mcp.json` as strict JSON, like its
 own loader: comments, trailing commas, a byte-order mark, or an empty existing
 file are invalid, and setup reports them instead of rewriting the file. Repair
 such a file to plain JSON first, then rerun setup.
@@ -214,7 +214,7 @@ in an existing Pi session after changing servers outside the session.
 
 ## Qwen Code
 
-For Qwen Code, setup registers `rea` in the `mcpServers` table of the
+For Qwen Code, setup registers `re-tool` in the `mcpServers` table of the
 user-level `~/.qwen/settings.json`, or `$QWEN_HOME/settings.json` when configured.
 Setup and doctor follow Qwen Code's tilde and working-directory-relative home
 overrides. Qwen Code also discovers personal skills in `~/.agents/skills`,
@@ -267,9 +267,9 @@ For OMP, setup writes a `type: "stdio"` entry to the user-level
 `~/.omp/agent/mcp.json`. It follows `PI_CONFIG_DIR` and
 `PI_CODING_AGENT_DIR` (relative to the setup working directory), and the profile selected by `OMP_PROFILE` or
 `PI_PROFILE` (`~/.omp/profiles/<name>/agent/mcp.json`). Setup also removes
-`rea` from that file's `disabledServers` list, which would otherwise hide the
+`re-tool` from that file's `disabledServers` list, which would otherwise hide the
 registration. Doctor treats an `enabled: false` entry as active when
-`enabledServers` lists `rea`, as OMP does, unless `disabledServers` also lists
+`enabledServers` lists `re-tool`, as OMP does, unless `disabledServers` also lists
 it. Run setup under each profile that should load REA.
 
 ## Hermes
@@ -332,14 +332,14 @@ stdio is the default transport. WorkBuddy discovers personal skills from
 setup installs its skill copy there.
 
 The global MCP path is a plain JSON file; setup preserves every other server
-and top-level key when it upserts `rea`. WorkBuddy also reads a project-level
+and top-level key when it upserts `re-tool`. WorkBuddy also reads a project-level
 `<project>/.workbuddy/mcp.json`, which setup does not touch: it registers the
 user-level file only. Loading this registration and real REA tool calls
 through WorkBuddy are verified.
 
 ## ZCode
 
-For [ZCode](https://zcode.z.ai/en/docs/mcp-services), setup registers `rea` in the nested `mcp.servers` table of the
+For [ZCode](https://zcode.z.ai/en/docs/mcp-services), setup registers `re-tool` in the nested `mcp.servers` table of the
 user-level `~/.zcode/cli/config.json`. Entries carry `command`, `args`, and
 `env` without a transport discriminator. ZCode discovers personal skills from
 `~/.zcode/skills` rather than the shared directory, so setup installs its
@@ -352,9 +352,9 @@ the first native server into an empty table, it copies the fallback's
 the fallback file untouched. Existing REA environment overrides are preserved
 when refreshing its command. A malformed or unreadable fallback file fails setup instead of
 being silently suppressed; repair or remove it and rerun. Uninstall removes an
-REA-owned `rea` entry from both the native table and the fallback, backing up
+REA-owned `re-tool` entry from both the native table and the fallback, backing up
 each changed file, so an emptied native table cannot load a leftover fallback
-registration; other fallback servers, settings and a foreign `rea` entry are
+registration; other fallback servers, settings and a foreign `re-tool` entry are
 kept. ZCode disables a
 server with `enable: false` on its entry; doctor reports such a registration
 as stale, and rerunning setup removes the flag to repair it. Native configuration
@@ -364,11 +364,11 @@ writing a registration ZCode cannot load.
 ## DeepSeek Harness
 
 DeepSeek Harness registers MCP clients through a Cordis YAML patch sequence
-rather than a `mcpServers` object. `rea setup --client dsh` appends (or
+rather than a `mcpServers` object. `re-tool setup --client dsh` appends (or
 replaces) the REA entry in the home patch `$DSH_HOME/cordis.patch.yml`
 (`~/.dsh/cordis.patch.yml` when `DSH_HOME` is unset), preserving unrelated
-patches and comments. `rea doctor --client dsh` checks that same entry id.
-`rea uninstall` removes it by scanning supported clients; uninstall takes no
+patches and comments. `re-tool doctor --client dsh` checks that same entry id.
+`re-tool uninstall` removes it by scanning supported clients; uninstall takes no
 `--client` flag. The home patch applies to every Harness profile, so the
 registration is written once and no per-profile edit is needed.
 
@@ -385,7 +385,7 @@ The written entry is:
     - id: rea-mcp
       name: "@deepseek-ai/dsh-mcp-client"
       config:
-        serverName: rea
+        serverName: re-tool
         transport: stdio
         command: /absolute/path/to/node
         args: ["/absolute/path/to/rea/scripts/rea.mjs", mcp]
@@ -397,9 +397,9 @@ that produces the entire REA config, or a group-targeted REA insertion. Use a
 literal config and a root-level insertion as shown above.
 
 For a global npm installation, the launcher is under
-`$(npm root -g)/rea-agents/scripts/rea.mjs`. Restart Harness after setup; it
-exposes tools as `mcp__rea__<tool_name>`. Run `rea setup --skill --dry-run`,
-review the destination, then `rea setup --skill --yes` to install the workflow
+`$(npm root -g)/re-tool/scripts/rea.mjs`. Restart Harness after setup; it
+exposes tools as `mcp__re-tool__<tool_name>`. Run `re-tool setup --skill --dry-run`,
+review the destination, then `re-tool setup --skill --yes` to install the workflow
 in `~/.agents/skills` (`$DSH_AGENTS_HOME/skills` when configured); Harness
 discovers that directory, and its native `skill` tool can load
 `reverse-engineer-anything`.
@@ -423,10 +423,10 @@ custom directory is selected. Doctor checks the merged user registration; uninst
 REA-owned entries from every applicable user file so an older entry cannot
 become active again. Malformed applicable files block setup before changes.
 
-Grok Build loads `[mcp_servers.rea]` from `$GROK_HOME/config.toml`, or from
+Grok Build loads `[mcp_servers.re-tool]` from `$GROK_HOME/config.toml`, or from
 `~/.grok/config.toml` when `GROK_HOME` is unset or empty. Setup edits that server
-table, `[mcp_servers.rea.env]`, and a root `disabled_mcp_servers` entry that
-names `rea`. It sets `startup_timeout_sec = 30` and leaves every other name
+table, `[mcp_servers.re-tool.env]`, and a root `disabled_mcp_servers` entry that
+names `re-tool`. It sets `startup_timeout_sec = 30` and leaves every other name
 in that list. The shared skill installed under `~/.agents/skills` is already
 on Grok Build's skill path.
 
@@ -438,11 +438,11 @@ computer. It does not import `mcp.json` from the data directory, and it does
 not attach a stdio server running on this machine. Setup does not call the
 account connector API, does not write a registration file, and does not report
 the data directory as aligned. Ask the Grok Bot chat to add a custom MCP
-server named `rea` that runs on the Bot's computer:
+server named `re-tool` that runs on the Bot's computer:
 
 ```bash
-npx -y rea-agents@<version> mcp
+npx -y re-tool@<version> mcp
 ```
 
-Do not put credentials in that command or its arguments. `rea doctor --client grok_bot`
-reports this manual step. `rea uninstall` does not remove the account connector.
+Do not put credentials in that command or its arguments. `re-tool doctor --client grok_bot`
+reports this manual step. `re-tool uninstall` does not remove the account connector.

@@ -354,7 +354,9 @@ describe("HopperClient startup failures", () => {
     if (result.ok) return;
 
     const projected = projectAnalysisError(result.error);
-    expect(projected.message).toContain("rea doctor --provider hopper --json");
+    expect(projected.message).toContain(
+      "re-tool doctor --provider hopper --json",
+    );
     expect(projected.message).toContain("UI or license prompt");
     expect(projected.message).toContain("close stale Hopper sessions");
     expect(projected.details).toMatchObject({

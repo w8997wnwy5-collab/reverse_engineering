@@ -7,6 +7,7 @@ import { ConfigurationError } from "../domain/configurationErrors.js";
 import { err, ok, type Result } from "../domain/result.js";
 import type { ClientConfigurationDocument } from "./ClientConfigurationDocument.js";
 import { CordisExpression, DshCordisYaml } from "./DshCordisYaml.js";
+import { PRODUCT_IDENTITY } from "../identity.js";
 
 export const DSH_ENTRY_ID = "rea-mcp";
 export const DSH_CLIENT_PACKAGE = "@deepseek-ai/dsh-mcp-client";
@@ -402,7 +403,10 @@ export const parseDshCordisDocument = (
   const source = new DshCordisDocument(text);
   return {
     document: { cordis: source },
-    servers: source.config === undefined ? {} : { rea: source.config },
+    servers:
+      source.config === undefined
+        ? {}
+        : { [PRODUCT_IDENTITY.mcpServerKey]: source.config },
     serversPath: [],
     dialect: "dsh",
     legacyServers: {},
@@ -425,9 +429,9 @@ export const dshClientRegistrationEntry = (
   command: readonly string[],
   environment: Readonly<Record<string, string>> = {},
 ): Record<string, unknown> => {
-  const [executable = "rea", ...args] = command;
+  const [executable = PRODUCT_IDENTITY.cliBinary, ...args] = command;
   return {
-    serverName: "rea",
+    serverName: PRODUCT_IDENTITY.mcpServerKey,
     transport: "stdio",
     command: executable,
     args,

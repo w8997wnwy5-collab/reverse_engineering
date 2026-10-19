@@ -128,7 +128,7 @@ describe("CLI advertised input schemas", () => {
 
     const help = await serve(cli, ["inspect-keyed-archive", "--help"]);
     expect(help.stdout).toContain(
-      "Usage: rea inspect-keyed-archive <path> [archive] [options]",
+      "Usage: re-tool inspect-keyed-archive <path> [archive] [options]",
     );
     expect(help.stdout).toContain(
       "archive  Relative archive path when the target is a bundle",

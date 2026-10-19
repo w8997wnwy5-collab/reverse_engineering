@@ -7,22 +7,22 @@ const failures = [
   [
     70,
     "private_display_unavailable",
-    "REA could not start its private Linux display. Install Xvfb, then rerun rea doctor.",
+    "REA could not start its private Linux display. Install Xvfb, then rerun re-tool doctor.",
   ],
   [
     71,
     "x11_authorization_failed",
-    "REA could not authorize its private Linux display. Install xauth, then rerun rea doctor.",
+    "REA could not authorize its private Linux display. Install xauth, then rerun re-tool doctor.",
   ],
   [
     72,
     "unsupported_hopper_build",
-    "This Hopper build is not supported for unattended Linux analysis. Unset HOPPER_LAUNCHER_PATH and rerun rea setup --yes --install-hopper, or update REA.",
+    "This Hopper build is not supported for unattended Linux analysis. Unset HOPPER_LAUNCHER_PATH and rerun re-tool setup --yes --install-hopper, or update REA.",
   ],
   [
     73,
     "invalid_launch_command",
-    "REA refused an unexpected Hopper launch command. Check HOPPER_LAUNCHER_PATH and rerun rea doctor.",
+    "REA refused an unexpected Hopper launch command. Check HOPPER_LAUNCHER_PATH and rerun re-tool doctor.",
   ],
   [
     74,
@@ -32,7 +32,7 @@ const failures = [
   [
     75,
     "hopper_exited_during_startup",
-    "Hopper exited before the REA bridge was ready. In CI, run rea doctor --provider hopper --json; if Hopper showed a UI or license prompt, complete it in the runner user session, otherwise close stale Hopper sessions and retry.",
+    "Hopper exited before the REA bridge was ready. In CI, run re-tool doctor --provider hopper --json; if Hopper showed a UI or license prompt, complete it in the runner user session, otherwise close stale Hopper sessions and retry.",
   ],
   [
     76,
@@ -47,17 +47,17 @@ const failures = [
   [
     78,
     "x11_input_failed",
-    "REA could not activate Hopper's validated demo control. Install the XTEST runtime, then rerun rea doctor.",
+    "REA could not activate Hopper's validated demo control. Install the XTEST runtime, then rerun re-tool doctor.",
   ],
   [
     79,
     "runtime_dependency_unavailable",
-    "A Linux demo-session dependency is unavailable. Rerun rea setup --yes --install-hopper, then rea doctor.",
+    "A Linux demo-session dependency is unavailable. Rerun re-tool setup --yes --install-hopper, then re-tool doctor.",
   ],
   [
     80,
     "x11_socket_directory_unusable",
-    "REA cannot use the host X11 socket directory for a private display. Run rea doctor --provider hopper for exact mount and namespace diagnostics.",
+    "REA cannot use the host X11 socket directory for a private display. Run re-tool doctor --provider hopper for exact mount and namespace diagnostics.",
   ],
 ] as const;
 

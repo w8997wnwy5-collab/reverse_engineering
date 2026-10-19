@@ -340,7 +340,8 @@ const doctorReportWithCleanup = (
     ...(typeof cleanup === "string"
       ? {}
       : { details: { cleanup_failure: projectAnalysisError(cleanup) } }),
-    remediation: "Resolve the reported cleanup failure, then rerun rea doctor.",
+    remediation:
+      "Resolve the reported cleanup failure, then rerun re-tool doctor.",
   };
   return {
     ...report,
@@ -434,8 +435,8 @@ const skillIdentityRemediation = (
 ): string => {
   const issues = identity?.issues;
   if (issues !== undefined && issues.length > 0)
-    return `${issues.map(({ path, detail }) => `${detail} (${path})`).join(" ")} Verify the reported paths and use regular skill directories, or run rea setup with --skill=false to configure the client without installing the skill.`;
-  return "Run rea setup to update the installed REA skill.";
+    return `${issues.map(({ path, detail }) => `${detail} (${path})`).join(" ")} Verify the reported paths and use regular skill directories, or run re-tool setup with --skill=false to configure the client without installing the skill.`;
+  return "Run re-tool setup to update the installed REA skill.";
 };
 
 const skillIdentityCheck = (
@@ -648,7 +649,10 @@ export const systemDoctorHost = (
     async installationPaths() {
       try {
         const command = platform === "win32" ? "where" : "which";
-        const arguments_ = platform === "win32" ? ["rea"] : ["-a", "rea"];
+        const arguments_ =
+          platform === "win32"
+            ? [PRODUCT_IDENTITY.cliBinary]
+            : ["-a", PRODUCT_IDENTITY.cliBinary];
         return uniqueLines(
           (await hostExecFileOutput(command, arguments_, commandEnvironment))
             .stdout,
@@ -740,7 +744,7 @@ const uncomposedLinuxDemoRuntimeCheck = (): Promise<DoctorCheck> =>
     ok: false,
     classification: "config_drift",
     detail: "Linux Hopper private-display diagnostics were not composed",
-    remediation: "Run rea doctor through the production CLI adapter.",
+    remediation: "Run re-tool doctor through the production CLI adapter.",
   });
 
 const manualHopperPaths = async (home: string): Promise<readonly string[]> => {

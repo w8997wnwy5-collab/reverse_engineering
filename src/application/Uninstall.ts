@@ -374,7 +374,7 @@ const registrationPresent = (parsed: ClientConfigurationDocument): boolean => {
   const name = PRODUCT_IDENTITY.mcpServerKey;
   return (
     Object.hasOwn(parsed.servers, name) ||
-    // Beside a native OpenCode V2 table, OpenCode also loads a V1 `mcp.rea`.
+    // Beside a native OpenCode V2 table, OpenCode also loads a V1 `mcp.re-tool`.
     legacyClientServerPath(parsed, name) !== undefined ||
     // Harness ownership is the stable entry id. A stale or malformed launcher
     // still belongs to that id, and so does a direct patch that projects no row.

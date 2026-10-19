@@ -19,7 +19,7 @@ The seven shipped tools are:
 | Add managed findings to an application graph                                | `project_managed_application_graph` |
 
 Each has a matching CLI command: replace underscores with hyphens and prefix
-the name with `rea`, for example `rea inspect-managed-artifact`.
+the name with `re-tool`, for example `re-tool inspect-managed-artifact`.
 Native-body bridge mapping and managed runtime execution are outside the
 current tool set.
 
@@ -29,8 +29,8 @@ The canonical tool inventory is the
 ## Inspect an assembly
 
 ```bash
-rea inspect-managed-artifact /absolute/path/Assembly.dll --json
-rea inspect-managed-members /absolute/path/Assembly.dll --json
+re-tool inspect-managed-artifact /absolute/path/Assembly.dll --json
+re-tool inspect-managed-members /absolute/path/Assembly.dll --json
 ```
 
 Use the artifact result to identify the assembly and its metadata coverage.
@@ -159,7 +159,7 @@ When whole-assembly member decoding reaches the representation budget, select
 known declaring types before their signatures and CIL bodies are decoded:
 
 ```bash
-rea inspect-managed-members /absolute/path/Assembly.dll --type Example.Parser
+re-tool inspect-managed-members /absolute/path/Assembly.dll --type Example.Parser
 ```
 
 MCP uses `inspect_managed_members` with

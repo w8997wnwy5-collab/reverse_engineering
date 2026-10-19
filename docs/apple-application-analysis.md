@@ -18,7 +18,7 @@ decode language metadata. A bridge basis is inferred from the native path and
 repeated for each paired script, rather than proving a particular binding.
 
 ```sh
-rea project-apple-application-graph '{"inventory_evidence":[<inventory_artifact Evidence>]}'
+re-tool project-apple-application-graph '{"inventory_evidence":[<inventory_artifact Evidence>]}'
 ```
 
 ```json
@@ -167,8 +167,8 @@ privileged helpers, and helper tools) is a separate process root with its own
 `@executable_path`.
 
 ```sh
-rea trace-dylib-resolution MyApp.app --json
-rea trace-dylib-resolution MyApp.app --root Contents/MacOS/MyApp --architecture arm64 --json
+re-tool trace-dylib-resolution MyApp.app --json
+re-tool trace-dylib-resolution MyApp.app --root Contents/MacOS/MyApp --architecture arm64 --json
 ```
 
 ```json

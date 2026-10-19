@@ -77,7 +77,8 @@ describe("doctor", () => {
     ).toEqual({
       node: `Install ${SUPPORTED_NODE_VERSION_PROSE}.`,
       host: "REA supports macOS 12+, Linux distributions with a recognized apt, dnf, or pacman package family, and the experimental Windows x64 Ghidra P0 boundary; automated Hopper setup additionally requires Ubuntu 24.04+, Fedora 41+, Nobara 44+, 64-bit Arch Linux, CachyOS, or Omarchy.",
-      hopper: "Run rea setup to install Hopper, or set HOPPER_LAUNCHER_PATH.",
+      hopper:
+        "Run re-tool setup to install Hopper, or set HOPPER_LAUNCHER_PATH.",
       target: "Supply a readable local app or program path.",
     });
   });
@@ -227,7 +228,7 @@ describe("doctor installation identity", () => {
       skill: {
         installed_version: "10",
         state: "stale",
-        remediation: "Run rea setup to update the installed REA skill.",
+        remediation: "Run re-tool setup to update the installed REA skill.",
       },
     });
   });
@@ -240,14 +241,14 @@ describe("doctor installation identity", () => {
     expect(result.healthy).toBe(false);
     expect(result.identity?.skill).toMatchObject({
       state: "missing",
-      remediation: "Run rea setup to update the installed REA skill.",
+      remediation: "Run re-tool setup to update the installed REA skill.",
     });
     expect(result.checks).toContainEqual({
       name: "skill:identity",
       ok: false,
       classification: "config_drift",
       detail: "Installed REA skill identity is missing.",
-      remediation: "Run rea setup to update the installed REA skill.",
+      remediation: "Run re-tool setup to update the installed REA skill.",
     });
   });
   it("reports stale client registration paths without claiming live state", async () => {
@@ -262,7 +263,7 @@ describe("doctor installation identity", () => {
               command: ["/old/rea", "mcp"],
               state: "stale",
               remediation:
-                "Run rea setup to refresh this registration, then restart the client.",
+                "Run re-tool setup to refresh this registration, then restart the client.",
             },
           ]),
       }),
@@ -333,7 +334,7 @@ describe("doctor scoped readiness", () => {
         config_path: "/home/user/.cursor/mcp.json",
         command: ["/old/rea", "mcp"],
         state: "unknown",
-        remediation: "Run rea setup to refresh this registration.",
+        remediation: "Run re-tool setup to refresh this registration.",
       },
     ];
     const scoped = await runDoctor(

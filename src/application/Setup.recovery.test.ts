@@ -124,7 +124,7 @@ describe("setup workflow", () => {
       host,
     );
     expect(result.remediation).toBe(
-      "Run rea doctor and apply each reported remediation.",
+      "Run re-tool doctor and apply each reported remediation.",
     );
   });
 
@@ -264,7 +264,7 @@ describe("setup scoped readiness", () => {
       {
         client: "codex",
         config_path: "/codex.toml",
-        command: ["rea", "mcp"],
+        command: ["re-tool", "mcp"],
         state: "aligned",
         remediation: null,
       },

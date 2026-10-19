@@ -4,6 +4,7 @@ import { z } from "zod";
 import { parseEvidence, type Evidence } from "../domain/evidence.js";
 import { jsonValueSchema, type JsonValue } from "../domain/jsonValue.js";
 import { canonicalJson } from "../domain/comparisonSemantics.js";
+import { PRODUCT_IDENTITY } from "../identity.js";
 
 /** Only authenticated, successful, non-conflicting transcript deliveries. */
 export interface FixtureClaimContext {
@@ -340,7 +341,7 @@ export const parseCodexToolCall = (
     evidence: [],
   };
   if (
-    parsed.server?.toLowerCase() !== "rea" ||
+    parsed.server?.toLowerCase() !== PRODUCT_IDENTITY.mcpServerKey ||
     status === "failed" ||
     (item.error !== undefined && item.error !== null)
   )
