@@ -1,0 +1,132 @@
+name: GitHub release
+
+# Publishes the packed CLI as a GitHub release asset, so it can be installed
+# with `npm install --global <asset URL>` without an npm registry account.
+on:
+  push:
+    tags: ["re-tool-*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HUSKY: "0"
+
+jobs:
+  build:
+    name: Pack and smoke-test release tarball
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.tag.outputs.name }}
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Cache npm package downloads
+        uses: ./.github/actions/npm-cache
+      - run: npm ci
+      - name: Resolve release tag
+        id: tag
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          version="$(node -p 'require("./package.json").version')"
+          tag="re-tool-${version}"
+          if [[ "${REF_TYPE}" == "tag" && "${REF_NAME}" != "${tag}" ]]; then
+            echo "::error::Tag ${REF_NAME} does not match package version ${version}; expected ${tag}."
+            exit 1
+          fi
+          {
+            printf 'name=%s\n' "${tag}"
+            printf 'version=%s\n' "${version}"
+          } >> "${GITHUB_OUTPUT}"
+      # The package declares the bundled Windows x64 native controls in
+      # package.json#files; build them the same way as CI's Windows lane.
+      - name: Prepare Windows cross compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y g++-mingw-w64-x86-64
+      - run: npm run build:windows-native
+      - run: npm run verify:windows-native:artifact
+      - name: Pack CLI
+        run: |
+          mkdir -p release
+          npm pack --pack-destination release
+      - name: Smoke test packed CLI
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          tarball="./release/re-tool-${VERSION}.tgz"
+          listing="$(tar -tzf "${tarball}")"
+          for path in package/native/windows/build/manifest.json package/native/windows/build/rea-windows-x64.node; do
+            if ! grep -qxF "${path}" <<<"${listing}"; then
+              echo "::error::Release tarball is missing ${path}."
+              exit 1
+            fi
+          done
+          prefix="$(mktemp -d)"
+          npm install --global --prefix "${prefix}" "${tarball}"
+          installed="$("${prefix}/bin/re-tool" --version)"
+          if [[ "${installed}" != "${VERSION}" ]]; then
+            echo "::error::Packed CLI reported ${installed}, expected ${VERSION}."
+            exit 1
+          fi
+          node "${prefix}/lib/node_modules/re-tool/scripts/verify-windows-native-artifact.mjs"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: re-tool-release-tarball
+          path: release/re-tool-${{ steps.tag.outputs.version }}.tgz
+          if-no-files-found: error
+
+  # Only this job can write to the repository. It runs no checkout, package
+  # install or build, so third-party code never shares a job with the token.
+  publish:
+    name: Publish GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: re-tool-release-tarball
+          path: release
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.build.outputs.tag }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          asset="release/re-tool-${VERSION}.tgz"
+          url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/download/${TAG}/re-tool-${VERSION}.tgz"
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            # Replace an asset only with a build of the commit the tag names;
+            # a new commit needs a new package.json version and tag.
+            tagged="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${TAG}" --jq .sha)"
+            if [[ "${tagged}" != "${GITHUB_SHA}" ]]; then
+              echo "::error::Release ${TAG} already exists for ${tagged}. Bump package.json#version to publish ${GITHUB_SHA}."
+              exit 1
+            fi
+            gh release upload "${TAG}" "${asset}" --clobber
+          else
+            notes="$(printf 'Install the CLI and MCP server:\n\n```bash\nnpm install --global %s\nre-tool setup\n```\n\nRequires Node.js 22.x (>=22.19), 24.x (>=24.11) or 26+.' "${url}")"
+            gh release create "${TAG}" "${asset}" \
+              --target "${GITHUB_SHA}" \
+              --title "RE-Tool ${VERSION}" \
+              --notes "${notes}"
+          fi

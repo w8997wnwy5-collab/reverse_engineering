@@ -141,12 +141,14 @@ main() {
   install_args=(install --global)
   if [ "$platform" = "Linux" ]; then
     install_args+=(--prefix "$HOME/.local")
-    install_bin="$HOME/.local/bin/rea"
+    install_bin="$HOME/.local/bin/re-tool"
   else
     npm_prefix="$(npm prefix --global)" || fail "the npm global prefix could not be read. Repair the npm configuration, then retry."
-    install_bin="$npm_prefix/bin/rea"
+    install_bin="$npm_prefix/bin/re-tool"
   fi
-  install_args+=("$PACKAGE@$version")
+  # Install the packed tarball attached to the GitHub release; the package
+  # is not published to the npm registry.
+  install_args+=("https://github.com/$REPOSITORY/releases/download/$PACKAGE-$version/$PACKAGE-$version.tgz")
 
   printf 'REA install plan\n'
   printf '  Version: %s\n' "$version"
@@ -164,7 +166,7 @@ main() {
 
   printf 'Installing %s@%s...\n' "$PACKAGE" "$version"
   npm "${install_args[@]}" || fail "npm could not install REA. Check registry access and npm permissions, then retry."
-  [ -x "$install_bin" ] || fail "npm completed without installing the rea command. Check the npm global bin directory and PATH, then retry."
+  [ -x "$install_bin" ] || fail "npm completed without installing the re-tool command. Check the npm global bin directory and PATH, then retry."
   installed_version="$("$install_bin" --version 2>/dev/null | tr -d '[:space:]')" || fail "the installed REA version could not be read. Reinstall the requested version, then retry."
   [ -n "$installed_version" ] || fail "the installed REA version could not be read. Reinstall the requested version, then retry."
   [ "$installed_version" = "$version" ] || fail "installed version $installed_version does not match $version. Reinstall the requested version, then retry."

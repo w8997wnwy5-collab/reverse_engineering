@@ -329,9 +329,9 @@ try {
   if (inputSchemaProfile === "compact") {
     // Select the existing presentation in this disposable native-client profile.
     const customized = JSON.parse(configured);
-    assert(customized.mcpServers.rea);
-    customized.mcpServers.rea.env = {
-      ...customized.mcpServers.rea.env,
+    assert(customized.mcpServers["re-tool"]);
+    customized.mcpServers["re-tool"].env = {
+      ...customized.mcpServers["re-tool"].env,
       REA_MCP_INPUT_SCHEMA_PROFILE: inputSchemaProfile,
     };
     await writeFile(configPath, JSON.stringify(customized, null, 2));

@@ -194,7 +194,7 @@ export async function verifyAndroidFailureRecovery({
       assert.match(failure.remediation.action, scenario.remediation);
       if (scenario.forbiddenGuidance)
         assert.doesNotMatch(failure.message, scenario.forbiddenGuidance);
-      assert.doesNotMatch(JSON.stringify(failure), /rea doctor/u);
+      assert.doesNotMatch(JSON.stringify(failure), /re-tool doctor/u);
       await verifyAndroidReadiness({
         entrypoint,
         environment: scenario.env,
@@ -253,7 +253,7 @@ export async function verifyAndroidFailureRecovery({
           requireMcpToolError(response).details.issues[0].message,
           /search_android_classes/u,
         );
-        assert.doesNotMatch(JSON.stringify(response), /rea doctor/u);
+        assert.doesNotMatch(JSON.stringify(response), /re-tool doctor/u);
         console.log(`PASS MCP selector correction: ${name}`);
       }
       const method = await client.callTool(

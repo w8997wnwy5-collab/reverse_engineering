@@ -42,7 +42,20 @@ i limiti su cui si basa.
 
 ## Avvio rapido
 
-### 1. Scarica e compila
+### 1. Installa
+
+Il modo più semplice è installare il pacchetto pubblicato nelle
+[Release](https://github.com/w8997wnwy5-collab/reverse_engineering/releases), senza clonare né compilare:
+
+```bash
+npm install --global https://github.com/w8997wnwy5-collab/reverse_engineering/releases/download/re-tool-6.7.0/re-tool-6.7.0.tgz
+re-tool --help
+```
+
+Per una versione più recente, copia il link del file `.tgz` dalla Release più
+nuova.
+
+In alternativa compila dai sorgenti:
 
 ```bash
 git clone https://github.com/w8997wnwy5-collab/reverse_engineering.git
@@ -53,14 +66,14 @@ npm run build
 
 ### 2. Prova la CLI
 
-Dalla cartella del progetto, senza installare nulla:
+Da una copia compilata dei sorgenti puoi provarla senza installarla:
 
 ```bash
 node scripts/rea.mjs --help
 node scripts/rea.mjs doctor
 ```
 
-Per avere il comando `re-tool` disponibile ovunque:
+Per avere il comando `re-tool` disponibile ovunque da quella copia:
 
 ```bash
 npm install --global .
@@ -86,10 +99,11 @@ il server MCP e installa le istruzioni di lavoro per l'agente, con un backup
 della configurazione esistente. Poi riavvia l'agente.
 
 In alternativa puoi registrare il server a mano (vedi anche
-[registrazione MCP manuale](docs/installation.md#mcp-registry)). Per Claude Code:
+[registrazione MCP manuale](docs/installation.md#mcp-registry)). Con il comando
+`re-tool` installato globalmente, per Claude Code:
 
 ```bash
-claude mcp add --scope local re-tool -- node /percorso/assoluto/reverse_engineering/scripts/rea.mjs mcp
+claude mcp add --scope local re-tool -- re-tool mcp
 ```
 
 Per i client che usano un file JSON:
@@ -98,12 +112,16 @@ Per i client che usano un file JSON:
 {
   "mcpServers": {
     "re-tool": {
-      "command": "node",
-      "args": ["/percorso/assoluto/reverse_engineering/scripts/rea.mjs", "mcp"]
+      "command": "re-tool",
+      "args": ["mcp"]
     }
   }
 }
 ```
+
+Da una copia dei sorgenti non installata usa invece `node` con il percorso
+assoluto dello script, ad esempio
+`claude mcp add --scope local re-tool -- node /percorso/assoluto/reverse_engineering/scripts/rea.mjs mcp`.
 
 ### 4. Chiedi al tuo agente
 
@@ -116,9 +134,18 @@ costruisci una funzionalità simile per il mio progetto.
 > Il pacchetto `re-tool` **non è pubblicato su npm**. I comandi della
 > documentazione che usano `npx re-tool@...` o `bunx re-tool@...` funzionano
 > solo dopo che avrai pubblicato tu stesso il pacchetto. Fino ad allora usa
-> l'installazione da sorgente descritta sopra.
+> la Release o l'installazione da sorgente descritte sopra.
+>
+> Per lo stesso motivo **non usare `re-tool update`** (né `re-tool --update`):
+> cerca gli aggiornamenti sul registro npm, dove il nome `re-tool` non è tuo.
+> Aggiorna come descritto qui sotto.
 
 ### Aggiornare
+
+Se hai installato dalla Release, ripeti `npm install --global` con il link del
+`.tgz` della [Release](https://github.com/w8997wnwy5-collab/reverse_engineering/releases) più recente.
+
+Se hai compilato dai sorgenti:
 
 ```bash
 git pull
@@ -126,8 +153,29 @@ npm ci
 npm run build
 ```
 
-Se hai installato il comando globalmente, ripeti `npm install --global .`.
-Poi riavvia l'agente.
+e, se avevi installato il comando globalmente, ripeti `npm install --global .`.
+In entrambi i casi poi riavvia l'agente.
+
+### Pubblicare una nuova Release
+
+Il workflow [GitHub release](.github/workflows/github-release.yml) compila il
+pacchetto, lo prova e lo allega alla Release `re-tool-<versione>`, dove
+`<versione>` è quella di `package.json`. Avvialo dalla scheda **Actions**
+(_GitHub release_ → _Run workflow_ sul branch `main`) oppure pubblicando un tag
+con quel nome.
+
+Una Release esistente non viene mai sostituita con un commit diverso: per
+pubblicare nuove modifiche aumenta prima la versione.
+
+```bash
+npm version 6.8.0 --no-git-tag-version   # package.json e package-lock.json
+npm run metadata:generate                # src/generatedPackageMetadata.ts
+```
+
+Aggiorna la stessa versione anche nei due campi `version` di `server.json` e
+nei comandi di `docs/installation.md` racchiusi dai commenti
+`x-release-please`, verifica con `npm run mcp-registry:check`, fai commit e
+push su `main` e poi avvia il workflow.
 
 ## Cosa puoi analizzare
 
@@ -199,6 +247,8 @@ La suite completa è molto ampia; vedi [docs/testing.md](docs/testing.md) e
 - GitHub Actions: rimosse le esecuzioni pianificate (cron) e il rilascio
   automatico su npm a ogni push. I workflow restano avviabili a mano dalla
   scheda _Actions_; la CI normale gira sulle pull request verso `main`.
+- Distribuzione tramite Release GitHub (pacchetto `.tgz` installabile con npm)
+  invece del registro npm.
 - La cartella `website/` (sito originale di REA) è conservata solo come
   riferimento: i test usano le sue app di esempio.
 

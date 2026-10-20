@@ -437,7 +437,11 @@ class WebsiteTranslationChecks(unittest.TestCase):
             root = Path(directory)
             for name in ("public", "templates", "locales"):
                 shutil.copytree(ROOT / "website" / name, root / "website" / name)
-            inventory = [item for item in languages(ROOT) if item["code"] in {"en", "zh-CN", "ar"}]
+            # The repository ships English only; keep two translated fixtures.
+            inventory = languages(ROOT)[:1] + [
+                {"code": "zh-CN", "name": "简体中文", "readme": "docs/readme/README_zh.md", "dir": "ltr"},
+                {"code": "ar", "name": "العربية", "readme": "docs/readme/README_ar.md", "dir": "rtl"},
+            ]
             (root / "website/locales/languages.json").write_text(json.dumps(inventory))
             for item in inventory:
                 destination = root / item["readme"]
@@ -589,9 +593,9 @@ class WebsiteTranslationChecks(unittest.TestCase):
             worker.start()
             try:
                 base = f"http://127.0.0.1:{server.server_port}/rea/"
-                with urlopen(base + "ar/faq?test=1") as response:
-                    self.assertEqual(response.url, base + "ar/faq/?test=1")
-                    self.assertIn(b'lang="ar"', response.read())
+                with urlopen(base + "faq?test=1") as response:
+                    self.assertEqual(response.url, base + "faq/?test=1")
+                    self.assertIn(b'lang="en"', response.read())
                 with urlopen(base + "assets/i18n.js") as response:
                     self.assertIn(b"export function t", response.read())
                 with urlopen(base + "examples/notes-example.zip") as response:

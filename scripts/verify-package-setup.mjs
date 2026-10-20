@@ -288,9 +288,10 @@ const verifyAbsentOpenCodeSetup = async ({ cli, environment, home }) => {
     execution.status !== 0 ||
     result.status !== "ready" ||
     !result.appliedActions.includes("configured_opencode") ||
-    config.mcp?.rea?.type !== "local" ||
-    config.mcp.rea.enabled !== true ||
-    JSON.stringify(config.mcp.rea.command) !== JSON.stringify([cli, "mcp"])
+    config.mcp?.["re-tool"]?.type !== "local" ||
+    config.mcp["re-tool"].enabled !== true ||
+    JSON.stringify(config.mcp["re-tool"].command) !==
+      JSON.stringify([cli, "mcp"])
   )
     throw new Error(
       `packaged setup did not configure explicitly selected OpenCode without a config file: ${JSON.stringify(result)}`,
@@ -451,10 +452,11 @@ const assertOpenCodeConfig = async ({
     config?.model !== "provider/model" ||
     mcp?.other?.command?.[0] !== "node" ||
     (expectedRegistration &&
-      (mcp?.rea?.type !== "local" ||
-        mcp.rea.enabled !== true ||
-        JSON.stringify(mcp.rea.command) !== JSON.stringify([cli, "mcp"]))) ||
-    (!expectedRegistration && mcp?.rea !== undefined)
+      (mcp?.["re-tool"]?.type !== "local" ||
+        mcp["re-tool"].enabled !== true ||
+        JSON.stringify(mcp["re-tool"].command) !==
+          JSON.stringify([cli, "mcp"]))) ||
+    (!expectedRegistration && mcp?.["re-tool"] !== undefined)
   )
     throw new Error("packaged OpenCode JSONC registration readback failed");
 };
@@ -588,7 +590,8 @@ const verifySetupFailureRecovery = async ({
     !failed.remediation?.includes("Claude Desktop") ||
     (await readFile(claudeConfig, "utf8")) !== "malformed" ||
     json(await readFile(cursorConfig, "utf8")).existing !== true ||
-    json(await readFile(cursorConfig, "utf8")).mcpServers?.rea !== undefined
+    json(await readFile(cursorConfig, "utf8")).mcpServers?.["re-tool"] !==
+      undefined
   )
     throw new Error(
       `packaged setup mutated clients after a preflight failure: ${JSON.stringify(failed)}`,
@@ -669,12 +672,12 @@ const verifyUninstall = async ({
     !(await lstat(cursorConfig)).isSymbolicLink() ||
     !(await lstat(codexConfig)).isSymbolicLink() ||
     cursorAfterUninstall.existing !== true ||
-    cursorAfterUninstall.mcpServers?.rea !== undefined ||
+    cursorAfterUninstall.mcpServers?.["re-tool"] !== undefined ||
     codexAfterUninstall !== CODEX_ORIGINAL ||
-    codexAfterUninstall.includes("mcp_servers.rea") ||
+    codexAfterUninstall.includes("mcp_servers.re-tool") ||
     openCodeErrors.length !== 0 ||
     openCodeAfterUninstall?.model !== "provider/model" ||
-    openCodeAfterUninstall?.mcp?.rea !== undefined ||
+    openCodeAfterUninstall?.mcp?.["re-tool"] !== undefined ||
     openCodeAfterUninstall?.mcp?.other?.command?.[0] !== "node" ||
     !(await readFile(`${opencodeConfig}.rea.backup`, "utf8")).includes(
       "OpenCode preferences must survive setup",

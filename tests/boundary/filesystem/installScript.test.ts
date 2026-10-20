@@ -143,7 +143,7 @@ describe("curl installer scenarios", { timeout: 20_000 }, () => {
       "missing installed command",
       ["--version", "0.3.0"],
       { FAKE_NPM_SKIP_BINARY: "1" },
-      "REA installation failed: npm completed without installing the rea command. Check the npm global bin directory and PATH, then retry.\n",
+      "REA installation failed: npm completed without installing the re-tool command. Check the npm global bin directory and PATH, then retry.\n",
     ],
     [
       "unreadable installed version",
@@ -248,7 +248,7 @@ describe("installer TTY fallback", { timeout: 20_000 }, () => {
 
     expect(exitCode).toBe(0);
     expect(output).toContain(
-      `Run ${join(fixture.home, ".local/bin/rea")} setup to configure Hopper and agents.`,
+      `Run ${join(fixture.home, ".local/bin/re-tool")} setup to configure Hopper and agents.`,
     );
     expect(await readFile(fixture.reaLog, "utf8")).toBe("--version\n");
     expect(await readFile(fixture.installerStderrLog, "utf8")).toBe("");
@@ -377,7 +377,7 @@ describe("Linux user-prefix installer", { timeout: 20_000 }, () => {
       "--global",
       "--prefix",
       join(home, ".local"),
-      "re-tool@0.3.0",
+      "https://github.com/w8997wnwy5-collab/reverse_engineering/releases/download/re-tool-0.3.0/re-tool-0.3.0.tgz",
       "",
     ]);
     expect((await readFile(argvLog)).toString()).toBe(printed.stdout);
@@ -392,11 +392,11 @@ describe("native macOS installer", { timeout: 20_000 }, () => {
       FAKE_NPM_PREFIX: join(fixture.home, "npm global prefix"),
     });
     expect(result.stdout).toContain(
-      "  Command: npm install --global re-tool@0.3.0\n",
+      "  Command: npm install --global https://github.com/w8997wnwy5-collab/reverse_engineering/releases/download/re-tool-0.3.0/re-tool-0.3.0.tgz\n",
     );
     expect(result.stdout).toContain("REA 0.3.0 is installed");
     expect(await readFile(fixture.npmLog, "utf8")).toBe(
-      "prefix --global\ninstall --global re-tool@0.3.0\n",
+      "prefix --global\ninstall --global https://github.com/w8997wnwy5-collab/reverse_engineering/releases/download/re-tool-0.3.0/re-tool-0.3.0.tgz\n",
     );
     expect(await readFile(fixture.reaLog, "utf8")).toBe("--version\n");
     expect(await readdir(fixture.temporary)).toEqual([]);
@@ -569,8 +569,8 @@ while [ "$#" -gt 0 ]; do
 done
 [ "\${FAKE_NPM_SKIP_BINARY:-}" = "1" ] && exit 0
 mkdir -p "$prefix/bin"
-cp "$FAKE_REA_SOURCE" "$prefix/bin/rea"
-chmod +x "$prefix/bin/rea"
+cp "$FAKE_REA_SOURCE" "$prefix/bin/re-tool"
+chmod +x "$prefix/bin/re-tool"
 `,
     ),
     executable(

@@ -167,7 +167,7 @@ installs the matching skill and on-demand references in the same plan, and adds
 ## Limit REA to one project or agent profile
 
 Setup registers REA for the whole client. For Claude Code it writes
-`mcpServers.rea` in `~/.claude.json` and installs the bundled skill under
+`mcpServers.re-tool` in `~/.claude.json` and installs the bundled skill under
 `~/.claude/skills`, so every project that Claude Code opens can call REA. To
 offer REA's tools only where they're wanted, use one of the routes below.
 
@@ -1294,7 +1294,8 @@ REA process and analysis state. Direct registrations follow the installed CLI;
 use `re-tool update` to update it. Running setup through `npx` again selects the pinned
 package-runner command. Do not register paths inside npm's temporary package cache.
 
-The optional curl wrapper installs only the global npm package:
+The optional curl wrapper installs only the global package, from the tarball
+attached to the matching GitHub release:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/w8997wnwy5-collab/reverse_engineering/main/install.sh | bash

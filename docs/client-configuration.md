@@ -27,7 +27,7 @@ It does not establish the effective client budget or fix the built-in-ID path.
 The existing compact profile passed native chat and analysis with the complete
 tool inventory on Linux using a loopback model fixture. After setup, add
 `"REA_MCP_INPUT_SCHEMA_PROFILE": "compact"` to the `env` object of the
-`mcpServers.rea` entry in Copilot's `mcp-config.json`, preserving its other
+`mcpServers.re-tool` entry in Copilot's `mcp-config.json`, preserving its other
 settings, then restart the client. Compact advertisements can reduce nested
 schema constraints; REA still validates complete canonical inputs. Full-profile
 `gpt-5.4` metadata is also verified locally. Live model API acceptance and
@@ -35,7 +35,7 @@ Windows remain unverified; see [native client verification](testing.md).
 
 ## Claude Desktop
 
-Setup registers `mcpServers.rea` in `claude_desktop_config.json`: under
+Setup registers `mcpServers.re-tool` in `claude_desktop_config.json`: under
 `~/Library/Application Support/Claude` on macOS, under
 `$XDG_CONFIG_HOME/Claude` (default `~/.config/Claude`) on Linux, and on Windows
 in the file the installed app reads:
@@ -128,7 +128,7 @@ and Claude Code reports that autocompact is thrashing. To avoid this:
   its requests to fail.
 - To shrink the upfront catalog, add
   `"REA_MCP_INPUT_SCHEMA_PROFILE": "compact"` to the `env` object of the
-  `mcpServers.rea` entry in `~/.claude.json` (`$CLAUDE_CONFIG_DIR/.claude.json`
+  `mcpServers.re-tool` entry in `~/.claude.json` (`$CLAUDE_CONFIG_DIR/.claude.json`
   when that variable is set), then restart Claude Code. Setup keeps this
   override.
 
@@ -186,7 +186,7 @@ Start a new Kimi Code session to pick up MCP and skill changes.
 ## Pi
 
 For [Pi](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/mcp.md),
-setup writes a `type: "stdio"` entry under `mcpServers.rea` in the user-level
+setup writes a `type: "stdio"` entry under `mcpServers.re-tool` in the user-level
 `~/.pi/agent/mcp.json` and installs the bundled skill under `~/.agents/skills`.
 Use `re-tool setup --client pi --dry-run --json` to inspect the plan, then
 `re-tool setup --client pi --yes --json` to approve it. Check the registration with
@@ -235,7 +235,7 @@ system overrides. Workspace trust follows `GEMINI_CLI_TRUST_WORKSPACE`,
 `GEMINI_RESTRICTED_MODE`, the effective `security.folderTrust.enabled` setting,
 and the selected `trustedFolders.json` (including
 `GEMINI_CLI_TRUSTED_FOLDERS_PATH`). Settings in an untrusted workspace do not
-participate. A workspace or system `mcpServers.rea` replaces the entire user
+participate. A workspace or system `mcpServers.re-tool` replaces the entire user
 entry; setup stops if the winning definition conflicts with its planned entry.
 Review those files manually: setup never edits administrator/workspace settings
 or grants workspace trust. Trust supplied only by a running IDE is outside this
@@ -274,7 +274,7 @@ it. Run setup under each profile that should load REA.
 
 ## Hermes
 
-For Hermes, setup writes a `mcp_servers.rea` entry to `config.yaml`, preserving
+For Hermes, setup writes a `mcp_servers.re-tool` entry to `config.yaml`, preserving
 comments and unrelated settings. It resolves that file from `HERMES_HOME`, else
 from the platform default Hermes itself uses — `%LOCALAPPDATA%\hermes` on
 Windows, `~/.hermes` elsewhere — including any `HERMES_DATA_DIR_SUFFIX`. Hermes
@@ -293,7 +293,7 @@ configuration and skill destinations; doctor and uninstall use those same paths.
 ## Qoder CLI
 
 For [Qoder](https://docs.qoder.com/cli/mcp-reference), setup writes
-`mcpServers.rea` into the user-level `~/.qoder/settings.json` (the
+`mcpServers.re-tool` into the user-level `~/.qoder/settings.json` (the
 `QODER_CONFIG_DIR` override is honored). Entries carry `command`, `args`, and
 `env`; stdio is the default transport. Qoder CLI discovers personal skills
 from `~/.qoder/skills` (following `QODER_CONFIG_DIR` when set), so setup
@@ -302,7 +302,7 @@ installs its skill copy there.
 ## Factory Droid
 
 For [Factory Droid](https://docs.factory.com/harness/mcp), setup writes
-`mcpServers.rea` into the user-level `~/.factory/mcp.json`. Entries carry
+`mcpServers.re-tool` into the user-level `~/.factory/mcp.json`. Entries carry
 `command`, `args`, and `env`. Droid discovers personal skills from
 `~/.factory/skills` ([skills](https://docs.factory.com/harness/skills)), so
 setup installs its skill copy there.
@@ -310,7 +310,7 @@ setup installs its skill copy there.
 ## Trae
 
 For [Trae](https://docs.trae.ai/ide/add-mcp-servers), setup writes
-`mcpServers.rea` into the user-scope `mcp.json` under Trae's VS Code-style
+`mcpServers.re-tool` into the user-scope `mcp.json` under Trae's VS Code-style
 user directory (`%APPDATA%\Trae\User` on Windows,
 `~/Library/Application Support/Trae/User` on macOS, and
 `~/.config/Trae/User` elsewhere). Entries carry `command`, `args`, and
@@ -324,7 +324,7 @@ loading this registration in Trae remains unverified.
 
 ## WorkBuddy
 
-For [WorkBuddy](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), setup writes `mcpServers.rea` into the
+For [WorkBuddy](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), setup writes `mcpServers.re-tool` into the
 global `~/.workbuddy/mcp.json` (a standard `mcpServers` JSON file at the user
 home root on every platform). Entries carry `command`, `args`, and `env`;
 stdio is the default transport. WorkBuddy discovers personal skills from
@@ -413,10 +413,10 @@ for its native configuration contract.
 
 ## Other client settings
 
-For OpenCode, setup writes the V1 `mcp.rea` entry, which OpenCode V1 and V2
+For OpenCode, setup writes the V1 `mcp.re-tool` entry, which OpenCode V1 and V2
 both load. If the configuration already uses OpenCode V2's native
 `mcp.servers` table, setup registers REA there instead and replaces any earlier
-`mcp.rea` entry from REA. Setup honors `OPENCODE_CONFIG_DIR` and
+`mcp.re-tool` entry from REA. Setup honors `OPENCODE_CONFIG_DIR` and
 `OPENCODE_CONFIG`, preferring the later-loaded JSONC file when both JSON and
 JSONC exist. The ordinary XDG global configuration still participates when a
 custom directory is selected. Doctor checks the merged user registration; uninstall removes
